@@ -392,8 +392,9 @@ export default function SemesterAverageApp() {
               </div>
             )}
 
-            <div className="table-container mt-6 overflow-x-auto rounded-md border border-neutral-700">
-              <table className="min-w-225 w-full border-collapse">
+            {/* Desktop Table View */}
+            <div className="hidden md:block table-container mt-6 overflow-x-auto rounded-md border border-neutral-700">
+              <table className="min-w-[900px] w-full border-collapse">
                 <thead className="bg-neutral-900">
                   <tr>
                     <th className="text-left text-sm font-semibold text-neutral-300 px-4 py-3">Module</th>
@@ -456,6 +457,69 @@ export default function SemesterAverageApp() {
                   ))}
                 </tbody>
               </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden mt-6 flex flex-col gap-4">
+              {computed.perRow.map((r, i) => (
+                <div key={i} className="flex flex-col gap-3 rounded-xl bg-neutral-800/50 border border-neutral-700 p-4">
+                  <div className="flex items-center gap-3">
+                    <input
+                      value={r.name}
+                      onChange={(e) => updateRow(i, "name", e.target.value)}
+                      className="flex-1 rounded-md border border-neutral-600 bg-neutral-700 px-3 py-2 text-neutral-200 outline-none focus:border-neutral-500 font-medium"
+                      placeholder="Module name"
+                    />
+                    <button
+                      onClick={() => removeRow(i)}
+                      className="cursor-pointer rounded-md bg-neutral-700 p-2 text-rose-400 hover:bg-neutral-600 flex-shrink-0"
+                      title="Remove module"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                    </button>
+                  </div>
+                  
+                  <div className="grid grid-cols-3 gap-3">
+                    <div>
+                      <label className="block text-xs text-neutral-400 mb-1">Coef</label>
+                      <input
+                        type="number"
+                        step="1"
+                        value={r.coef}
+                        onChange={(e) => updateRow(i, "coef", e.target.value)}
+                        className="w-full rounded-md border border-neutral-600 bg-neutral-700 px-3 py-2 text-neutral-200 outline-none focus:border-neutral-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-neutral-400 mb-1">Exam</label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={r.exam}
+                        onChange={(e) => updateRow(i, "exam", e.target.value)}
+                        className="w-full rounded-md border border-neutral-600 bg-neutral-700 px-3 py-2 text-neutral-200 outline-none focus:border-neutral-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-neutral-400 mb-1">CA</label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={r.ca}
+                        onChange={(e) => updateRow(i, "ca", e.target.value)}
+                        className="w-full rounded-md border border-neutral-600 bg-neutral-700 px-3 py-2 text-neutral-200 outline-none focus:border-neutral-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex justify-between items-center pt-2 border-t border-neutral-700/50">
+                    <span className="text-sm text-neutral-400">Final Grade</span>
+                    <span className={`text-lg font-bold ${r.moduleFinal !== "" && r.moduleFinal < 10 ? "text-rose-400" : "text-white"}`}>
+                      {r.moduleFinal === "" ? "—" : r.moduleFinal}
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
 
             <div className="mt-6 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
