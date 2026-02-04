@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+@layer base {
+  html,
+  body {
+    font-family:
+      system-ui,
+      -apple-system,
+      sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #171717; /* neutral-900 */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #404040; /* neutral-700 */
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #525252; /* neutral-600 */
+}
