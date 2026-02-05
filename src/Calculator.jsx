@@ -255,7 +255,7 @@ export default function SemesterAverageApp() {
     isRestoringRef.current = true;
     setPast([]);
     setFuture([]);
-    setSnapshots([]);
+    // setSnapshots([]);
     setPresent(createDefaultState());
     queueMicrotask(() => (isRestoringRef.current = false));
   }
