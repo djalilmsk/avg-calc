@@ -32,7 +32,7 @@ export default function ModulesTable({ rows, onUpdateRow, onRemoveRow }) {
         <tbody>
           {rows.map((row, index) => (
             <tr key={index}>
-              <td className="rounded-l-xl px-2">
+              <td className="rounded-l-xl pr-2">
                 <input
                   value={row.name}
                   onChange={(event) =>
@@ -90,7 +90,7 @@ export default function ModulesTable({ rows, onUpdateRow, onRemoveRow }) {
                 </span>
               </td>
 
-              <td className="rounded-r-xl px-2">
+              <td className="rounded-r-xl pl-2">
                 <button
                   onClick={() => onRemoveRow(index)}
                   className="rounded-lg calc-btn--soft ml-auto flex h-9 w-9  aspect-square  items-center justify-center cursor-pointer p-0"

@@ -116,7 +116,7 @@ export default function SemesterAverageApp() {
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto px-3 pb-28 sm:px-7 sm:pb-36">
+          <div className="flex-1 overflow-y-auto px-3 pb-44 sm:px-7 sm:pb-36 w-full">
             <div className="mx-auto max-w-full">
               <ModulesTable
                 rows={computed.perRow}
