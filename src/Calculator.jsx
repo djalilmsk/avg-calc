@@ -94,11 +94,15 @@ export default function SemesterAverageApp() {
         onResizeStart={startSidebarResize}
       />
 
-      <SidebarInset className="h-screen overflow-hidden bg-[#1a1b1e] p-2 sm:p-6">
+      <SidebarInset className="h-screen overflow-hidden bg-[#1a1b1e] p-2 sm:p-4">
+        <h1 className="text-xl font-bold text-slate-100 sm:text-3xl sm:hidden mx-auto -mb-1 pt-3">
+          CookedCalc
+        </h1>
+
         <div className="mx-auto flex h-full w-full max-w-7xl flex-col">
           <div className="shrink-0 px-3 sm:px-7">
-            <div className="flex items-center justify-between gap-2 pb-2 max-sm:py-4">
-              <div className="pr-6 flex gap-2">
+            <div className="flex items-center justify-between gap-2 pb-2 py-4">
+              <div className="flex gap-2">
                 <SidebarToggleButton />
                 <a
                   href="https://github.com/djalilmsk/avg-calc"
@@ -117,7 +121,7 @@ export default function SemesterAverageApp() {
                 </a>
               </div>
 
-              <h1 className="text-xl font-bold text-slate-100 sm:text-3xl">
+              <h1 className="text-xl font-bold text-slate-100 sm:text-3xl max-sm:hidden">
                 CookedCalc
               </h1>
 
