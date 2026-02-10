@@ -35,8 +35,8 @@ export default function SemesterAverageApp() {
     computed,
     history,
     actions,
-    templates,
-    needsTemplateChoice,
+    // templates,
+    // needsTemplateChoice,
   } = useSemesterCalculator();
   const [sidebarWidth, setSidebarWidth] = useState(() => {
     if (typeof window === "undefined") return 300;
@@ -157,12 +157,12 @@ export default function SemesterAverageApp() {
         </div>
         <AddModuleBar onAdd={actions.addRow} />
 
-        {needsTemplateChoice && (
+        {/* {needsTemplateChoice && (
           <TemplateChooser
             templates={templates}
             onChoose={actions.applyTemplate}
           />
-        )}
+        )} */}
       </SidebarInset>
     </SidebarProvider>
   );
