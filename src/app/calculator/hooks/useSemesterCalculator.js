@@ -107,7 +107,7 @@ export function useSemesterCalculator() {
     const semesterAvg = totals.sumCoef > 0 ? round2(totals.sumWeighted / totals.sumCoef) : "";
 
     return {
-      perRow: perRow.map(({ _coef, _moduleFinal, _hasAnyGrade, ...publicRow }) => publicRow),
+      perRow: perRow.map(({ ...publicRow }) => publicRow),
       semesterAvg,
       sumCoef: totals.sumCoef
     };
