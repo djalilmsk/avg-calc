@@ -50,14 +50,14 @@ export default function SnapshotsList({
         <div className="mb-2 flex items-center justify-between gap-2 px-1 pt-2">
           <h2 className="text-sm font-semibold text-zinc-200">Saved History</h2>
           <div className="flex items-center gap-1.5">
-            <span className="rounded-md bg-[#262626] px-3 py-2 text-xs text-zinc-300">{snapshots.length}</span>
+            <span className="rounded-md bg-[#262626] px-3 py-2 text-xs text-zinc-300 sm:h-8 sm:w-8 h-11 w-11 flex justify-center items-center max-sm:text-xl">{snapshots.length}</span>
             <button
               onClick={onSave}
-              className="flex h-8 w-8 items-center justify-center rounded-md border border-[#3d3d3d] bg-[#2a2a2a] text-zinc-100 hover:bg-[#323232]"
+              className="flex sm:h-8 sm:w-8 h-11 w-11 items-center justify-center rounded-md border border-[#3d3d3d] bg-[#2a2a2a] text-zinc-100 hover:bg-[#323232]"
               title="New snapshot"
               aria-label="New snapshot"
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="sm:h-4 sm:w-4 h-5.5 w-5.5" />
             </button>
           </div>
         </div>
@@ -102,7 +102,7 @@ export default function SnapshotsList({
                       <>
                         <button
                           onClick={() => submitRename(snapshot.id)}
-                          className="flex h-7 w-7 items-center justify-center rounded-md bg-[#2a2a2a] text-zinc-300 hover:bg-[#343434]"
+                          className="flex h-9 w-9 sm:h-7 sm:w-7  items-center justify-center rounded-md bg-[#2a2a2a] text-zinc-300 hover:bg-[#343434]"
                           title="Save name"
                           aria-label="Save name"
                         >
@@ -110,7 +110,7 @@ export default function SnapshotsList({
                         </button>
                         <button
                           onClick={cancelRename}
-                          className="flex h-7 w-7 items-center justify-center rounded-md bg-[#2a1f1f] text-red-300 hover:bg-[#352626]"
+                          className="flex h-9 w-9 sm:h-7 sm:w-7  items-center justify-center rounded-md bg-[#2a1f1f] text-red-300 hover:bg-[#352626]"
                           title="Cancel rename"
                           aria-label="Cancel rename"
                         >
@@ -121,7 +121,7 @@ export default function SnapshotsList({
                       <>
                         <button
                           onClick={() => onRestore(snapshot.id)}
-                          className="flex h-7 w-7 items-center justify-center rounded-md bg-[#2a2a2a] text-zinc-300 hover:bg-[#343434]"
+                          className="flex h-9 w-9 sm:h-7 sm:w-7  items-center justify-center rounded-md bg-[#2a2a2a] text-zinc-300 hover:bg-[#343434]"
                           title="Restore snapshot"
                           aria-label="Restore snapshot"
                         >
@@ -129,7 +129,7 @@ export default function SnapshotsList({
                         </button>
                         <button
                           onClick={() => startRename(snapshot)}
-                          className="flex h-7 w-7 items-center justify-center rounded-md bg-[#2a2a2a] text-zinc-300 hover:bg-[#343434]"
+                          className="flex h-9 w-9 sm:h-7 sm:w-7  items-center justify-center rounded-md bg-[#2a2a2a] text-zinc-300 hover:bg-[#343434]"
                           title="Rename snapshot"
                           aria-label="Rename snapshot"
                         >
@@ -137,7 +137,7 @@ export default function SnapshotsList({
                         </button>
                         <button
                           onClick={() => onDelete(snapshot.id)}
-                          className="flex h-7 w-7 items-center justify-center rounded-md bg-[#2a1f1f] text-red-300 hover:bg-[#352626]"
+                          className="flex h-9 w-9 sm:h-7 sm:w-7  items-center justify-center rounded-md bg-[#2a1f1f] text-red-300 hover:bg-[#352626]"
                           title="Delete snapshot"
                           aria-label="Delete snapshot"
                         >

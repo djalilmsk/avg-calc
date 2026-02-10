@@ -20,11 +20,11 @@ function SidebarToggleButton() {
   return (
     <button
       onClick={toggleSidebar}
-      className="flex h-9 w-9 items-center justify-center rounded-lg cursor-pointer bg-[#262626] text-zinc-200 hover:bg-[#2f2f2f]"
+      className="flex sm:h-9 sm:w-9 h-11 w-11 items-center justify-center rounded-lg cursor-pointer bg-[#262626] text-zinc-200 hover:bg-[#2f2f2f]"
       title="Toggle snapshots"
       aria-label="Toggle snapshots"
     >
-      <PanelLeft className="h-4 w-4" />
+      <PanelLeft className="sm:h-4 sm:w-4 h-5.5 w-5.5" />
     </button>
   );
 }
@@ -95,7 +95,7 @@ export default function SemesterAverageApp() {
       />
 
       <SidebarInset className="h-screen overflow-hidden bg-[#1a1b1e] p-2 sm:p-4">
-        <h1 className="text-xl font-bold text-slate-100 sm:text-3xl sm:hidden mx-auto -mb-1 pt-3">
+        <h1 className="text-2xl font-bold text-slate-100 sm:text-3xl sm:hidden mx-auto -mb-1 pt-3 pb-2">
           CookedCalc
         </h1>
 
@@ -108,15 +108,15 @@ export default function SemesterAverageApp() {
                   href="https://github.com/djalilmsk/avg-calc"
                   target="_blank"
                   rel="noreferrer"
-                  className="flex h-9 items-center gap-2 rounded-lg bg-[#262626] px-2 text-zinc-200 transition-colors hover:bg-[#2f2f2f]"
+                  className="flex sm:h-9 h-11 items-center gap-2 rounded-lg bg-[#262626] px-2 text-zinc-200 transition-colors hover:bg-[#2f2f2f]"
                   aria-label="Open GitHub repository"
                   title="Open GitHub repository"
                 >
-                  <Github className="h-4 w-4" />
+                  <Github className="sm:size-4 size-5.5" />
                   <img
                     src="https://img.shields.io/github/stars/djalilmsk/avg-calc?style=flat&label=%E2%98%85&color=2f2f2f"
                     alt="GitHub stars"
-                    className="h-4"
+                    className="sm:h-4 sm:w-4 h-6 w-11"
                   />
                 </a>
               </div>
