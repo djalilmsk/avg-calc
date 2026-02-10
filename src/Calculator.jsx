@@ -11,7 +11,7 @@ import {
   SidebarProvider,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { PanelLeft } from "lucide-react";
+import { Github, PanelLeft } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 function SidebarToggleButton() {
@@ -98,21 +98,38 @@ export default function SemesterAverageApp() {
         <div className="mx-auto flex h-full w-full max-w-7xl flex-col">
           <div className="shrink-0 px-3 sm:px-7">
             <div className="flex items-center justify-between gap-2 pb-2 max-sm:py-4">
-              <div className="pr-18">
+              <div className="pr-6 flex gap-2">
                 <SidebarToggleButton />
+                <a
+                  href="https://github.com/djalilmsk/avg-calc"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex h-9 items-center gap-2 rounded-lg bg-[#262626] px-2 text-zinc-200 transition-colors hover:bg-[#2f2f2f]"
+                  aria-label="Open GitHub repository"
+                  title="Open GitHub repository"
+                >
+                  <Github className="h-4 w-4" />
+                  <img
+                    src="https://img.shields.io/github/stars/djalilmsk/avg-calc?style=flat&label=%E2%98%85&color=2f2f2f"
+                    alt="GitHub stars"
+                    className="h-4"
+                  />
+                </a>
               </div>
 
               <h1 className="text-xl font-bold text-slate-100 sm:text-3xl">
                 CookedCalc
               </h1>
 
-              <HistoryControls
-                canUndo={history.canUndo}
-                canRedo={history.canRedo}
-                onUndo={actions.undo}
-                onRedo={actions.redo}
-                onReset={actions.resetAll}
-              />
+              <div className="flex items-center gap-2">
+                <HistoryControls
+                  canUndo={history.canUndo}
+                  canRedo={history.canRedo}
+                  onUndo={actions.undo}
+                  onRedo={actions.redo}
+                  onReset={actions.resetAll}
+                />
+              </div>
             </div>
           </div>
 
