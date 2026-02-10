@@ -133,6 +133,7 @@ export default function SemesterAverageApp() {
               <SummaryBar
                 sumCoef={computed.sumCoef}
                 semesterAvg={computed.semesterAvg}
+                rows={computed.perRow}
               />
             </div>
           </div>

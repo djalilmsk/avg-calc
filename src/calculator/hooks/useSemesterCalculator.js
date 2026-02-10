@@ -3,6 +3,10 @@ import { HISTORY_LIMIT, SNAPSHOT_LIMIT, START_TEMPLATES, STORAGE_KEY } from "../
 import { createDefaultState, getTemplateById, loadPersisted } from "../state";
 import { clampNumber, deepCopy, nowLabel, round2 } from "../utils";
 
+function clampRange(value, min, max) {
+  return Math.min(max, Math.max(min, clampNumber(value)));
+}
+
 export function useSemesterCalculator() {
   const TEMPLATE_STORAGE_KEY = "semester_avg_template_v1";
   const initialStore = useMemo(() => loadPersisted(), []);
@@ -63,10 +67,10 @@ export function useSemesterCalculator() {
   const computed = useMemo(() => {
     const perRow = rows.map((row) => {
       const coef = clampNumber(row.coef);
-      const exam = clampNumber(row.exam);
-      const ca = clampNumber(row.ca);
-      const examWeightNum = clampNumber(row.examWeight);
-      const caWeightNum = clampNumber(row.caWeight);
+      const exam = clampRange(row.exam, 0, 20);
+      const ca = clampRange(row.ca, 0, 20);
+      const examWeightNum = clampRange(row.examWeight, 0, 1);
+      const caWeightNum = clampRange(row.caWeight, 0, 1);
       const includeExam = row.includeExam !== false;
       const includeCa = row.includeCa !== false;
       const activeWeight = (includeExam ? examWeightNum : 0) + (includeCa ? caWeightNum : 0);
@@ -129,8 +133,8 @@ export function useSemesterCalculator() {
   function addRow(payload) {
     const name = String(payload?.name ?? "New module").trim() || "New module";
     const coef = payload?.coef ?? 1;
-    const examWeight = payload?.examWeight ?? 0.6;
-    const caWeight = payload?.caWeight ?? 0.4;
+    const examWeight = clampRange(payload?.examWeight ?? 0.6, 0, 1);
+    const caWeight = clampRange(payload?.caWeight ?? 0.4, 0, 1);
     const includeExam = payload?.includeExam ?? true;
     const includeCa = payload?.includeCa ?? true;
 

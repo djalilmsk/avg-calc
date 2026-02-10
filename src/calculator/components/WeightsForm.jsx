@@ -21,7 +21,7 @@ export default function WeightsForm({
         </div>
 
         <div>
-          <label className="calc-label block">CA weight</label>
+          <label className="calc-label block">TD weight</label>
           <input
             type="number"
             step="0.01"
@@ -34,7 +34,7 @@ export default function WeightsForm({
         <button
           onClick={onNormalize}
           className="calc-btn calc-btn--primary cursor-pointer"
-          title="Make (Exam + CA) = 1"
+          title="Make (Exam + TD) = 1"
         >
           Normalize weights
         </button>
@@ -42,7 +42,7 @@ export default function WeightsForm({
 
       {!showWarning && (
         <div className="warning-box mt-3 px-4 py-3 text-sm">
-          Warning: Exam + CA weights should equal 1 (example: 0.6 + 0.4).
+          Warning: Exam + TD weights should equal 1 (example: 0.6 + 0.4).
         </div>
       )}
     </>

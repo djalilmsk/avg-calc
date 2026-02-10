@@ -33,7 +33,7 @@ export default function ModulesMobileList({ rows, onUpdateRow, onRemoveRow }) {
           </div>
 
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-            <div className="col-span-2">
+            <div className="max-sm:col-span-2">
               <label className="calc-label mb-1 block text-xs">Coef</label>
               <input
                 type="number"
@@ -51,6 +51,8 @@ export default function ModulesMobileList({ rows, onUpdateRow, onRemoveRow }) {
               <input
                 type="number"
                 step="0.01"
+                min="0"
+                max="20"
                 value={row.exam}
                 onChange={(event) =>
                   onUpdateRow(index, "exam", event.target.value)
@@ -60,10 +62,12 @@ export default function ModulesMobileList({ rows, onUpdateRow, onRemoveRow }) {
             </div>
 
             <div>
-              <label className="calc-label mb-1 block text-xs">CA</label>
+              <label className="calc-label mb-1 block text-xs">TD</label>
               <input
                 type="number"
                 step="0.01"
+                min="0"
+                max="20"
                 value={row.ca}
                 onChange={(event) =>
                   onUpdateRow(index, "ca", event.target.value)

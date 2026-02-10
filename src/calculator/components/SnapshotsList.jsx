@@ -47,10 +47,10 @@ export default function SnapshotsList({
       className="border-r border-[#2b2b2b] bg-[#171717]"
     >
       <SidebarHeader className="border-b border-[#2b2b2b] bg-[#171717] p-2.5">
-        <div className="mb-2 flex items-center justify-between gap-2 px-1">
-          <h2 className="text-sm font-semibold text-zinc-200">Snapshots</h2>
+        <div className="mb-2 flex items-center justify-between gap-2 px-1 pt-2">
+          <h2 className="text-sm font-semibold text-zinc-200">Saved History</h2>
           <div className="flex items-center gap-1.5">
-            <span className="rounded-md bg-[#262626] px-2 py-0.5 text-xs text-zinc-300">{snapshots.length}</span>
+            <span className="rounded-md bg-[#262626] px-3 py-2 text-xs text-zinc-300">{snapshots.length}</span>
             <button
               onClick={onSave}
               className="flex h-8 w-8 items-center justify-center rounded-md border border-[#3d3d3d] bg-[#2a2a2a] text-zinc-100 hover:bg-[#323232]"
