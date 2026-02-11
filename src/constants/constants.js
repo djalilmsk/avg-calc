@@ -5,93 +5,76 @@ export const STORAGE_KEY = "semester_avg_app_v1";
 export const HISTORY_LIMIT = 80;
 export const SNAPSHOT_LIMIT = 30;
 export const SNAPSHOT_VISIBLE_LIMIT = 6;
+export const MAX_TEMPLATE_STORAGE = 4;
 
-export const DEFAULT_ROWS = [
-  // {
-  //   name: "Algorithmique et Complexite avancees",
-  //   coef: 4,
-  //   exam: "",
-  //   ca: "",
-  //   examWeight: DEFAULT_EXAM_WEIGHT,
-  //   caWeight: DEFAULT_CA_WEIGHT,
-  //   includeExam: true,
-  //   includeCa: true,
-  // },
-  // {
-  //   name: "BDD: Administration et architecture",
-  //   coef: 4,
-  //   exam: "",
-  //   ca: "",
-  //   examWeight: DEFAULT_EXAM_WEIGHT,
-  //   caWeight: DEFAULT_CA_WEIGHT,
-  //   includeExam: true,
-  //   includeCa: true,
-  // },
-  // {
-  //   name: "Fondements de l'IA (FIA)",
-  //   coef: 2,
-  //   exam: "",
-  //   ca: "",
-  //   examWeight: DEFAULT_EXAM_WEIGHT,
-  //   caWeight: DEFAULT_CA_WEIGHT,
-  //   includeExam: true,
-  //   includeCa: true,
-  // },
-  // {
-  //   name: "Genie Logiciel",
-  //   coef: 4,
-  //   exam: "",
-  //   ca: "",
-  //   examWeight: DEFAULT_EXAM_WEIGHT,
-  //   caWeight: DEFAULT_CA_WEIGHT,
-  //   includeExam: true,
-  //   includeCa: true,
-  // },
-  // {
-  //   name: "Systeme d'Exploitation: Synchro et comm (SYS2)",
-  //   coef: 3,
-  //   exam: "",
-  //   ca: "",
-  //   examWeight: DEFAULT_EXAM_WEIGHT,
-  //   caWeight: DEFAULT_CA_WEIGHT,
-  //   includeExam: true,
-  //   includeCa: true,
-  // },
-  // {
-  //   name: "Techniques d'Optimisation (TOp)",
-  //   coef: 3,
-  //   exam: "",
-  //   ca: "",
-  //   examWeight: DEFAULT_EXAM_WEIGHT,
-  //   caWeight: DEFAULT_CA_WEIGHT,
-  //   includeExam: true,
-  //   includeCa: true,
-  // },
+function createRow(
+  name,
+  coef,
+  {
+    examWeight = DEFAULT_EXAM_WEIGHT,
+    caWeight = DEFAULT_CA_WEIGHT,
+    includeExam = true,
+    includeCa = true,
+  } = {},
+) {
+  return {
+    name,
+    coef,
+    exam: "",
+    ca: "",
+    examWeight,
+    caWeight,
+    includeExam,
+    includeCa,
+  };
+}
+
+const templates = [
+  [
+    createRow("Algorithmique et Complexite avancees", 4),
+    createRow("BDD: Administration et architecture", 4),
+    createRow("Fondements de l'IA (FIA)", 2),
+    createRow("Genie Logiciel", 4),
+    createRow("Systeme d'Exploitation: Synchro et comm (SYS2)", 3),
+    createRow("Techniques d'Optimisation (TOp)", 3),
+  ],
+  [
+    createRow("Compilation", 4, { examWeight: 0.5, caWeight: 0.5 }),
+    createRow("Software Engineering", 2, { examWeight: 0.6, caWeight: 0.4 }),
+    createRow("Mathematical Tools for Cryptography", 4, {
+      examWeight: 0.5,
+      caWeight: 0.5,
+    }),
+    createRow("Operational Research", 4, { examWeight: 0.5, caWeight: 0.5 }),
+    createRow("Python Programming", 2, { examWeight: 0.6, caWeight: 0.4 }),
+    createRow("Web Development", 2, { examWeight: 0.6, caWeight: 0.4 }),
+    createRow("Business Intelligence", 1, {
+      examWeight: 1,
+      caWeight: 0,
+      includeCa: false,
+    }),
+    createRow("Theory of Information and Coding", 1, {
+      examWeight: 0.6,
+      caWeight: 0.4,
+    }),
+  ],
 ];
+
+export const DEFAULT_ROWS = templates[0];
 
 export const START_TEMPLATES = [
   {
-    id: "eng3-gl-s1",
-    title: "Engineer 3rd GL Sem 1",
-    subtitle: "Current template",
-    rows: DEFAULT_ROWS,
+    id: "software-engineering-3y-s1-engineering",
+    name: "Software Engineering",
+    year: "3rd Year",
+    semester: "S1",
+    rows: templates[0],
   },
   {
-    id: "eng3-gl-s2",
-    title: "Engineer 3rd GL Sem 2",
-    subtitle: "Current template",
-    rows: DEFAULT_ROWS,
+    id: "cyber-security-3y-s1-engineering",
+    name: "Cyber Security",
+    year: "3rd Year",
+    semester: "S1",
+    rows: templates[1],
   },
-  {
-    id: "eng3-gl-s3",
-    title: "Engineer 3rd GL Sem 3",
-    subtitle: "Current template",
-    rows: DEFAULT_ROWS,
-  },
-  {
-    id: "eng3-gl-s3",
-    title: "Engineer 3rd GL Sem 3",
-    subtitle: "Current template",
-    rows: DEFAULT_ROWS,
-  }
 ];
