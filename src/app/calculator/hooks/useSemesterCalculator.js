@@ -230,6 +230,21 @@ function getNextUniqueTemplate(templateName, templates) {
   return templateId;
 }
 
+function isTemplateHistoryEmpty(history, rowsOverride = null) {
+  if (!history || !history.sourceTemplateId) return false;
+
+  const rows = Array.isArray(rowsOverride) ? rowsOverride : history.rows;
+  if (!Array.isArray(rows) || rows.length === 0) return true;
+
+  return rows.every((row) => {
+    const examEmpty =
+      row?.includeExam === false || String(row?.exam ?? "").trim() === "";
+    const caEmpty =
+      row?.includeCa === false || String(row?.ca ?? "").trim() === "";
+    return examEmpty && caEmpty;
+  });
+}
+
 export function useSemesterCalculator() {
   const storageApi = useCalculatorStorageApi();
   const initialStore = useMemo(
@@ -492,6 +507,23 @@ export function useSemesterCalculator() {
       if (!history) return false;
 
       clearPendingHistoryPush();
+
+      const previousSelectedId = selectedHistoryIdRef.current;
+      if (previousSelectedId && previousSelectedId !== history.id) {
+        const previousHistory = findHistoryById(
+          previousSelectedId,
+          historiesRef.current
+        );
+        if (isTemplateHistoryEmpty(previousHistory, presentRef.current.rows)) {
+          setHistories((currentHistories) =>
+            currentHistories.filter(
+              (currentHistory) => currentHistory.id !== previousSelectedId
+            )
+          );
+          storageApi.clearHistoryTimeline(previousSelectedId);
+        }
+      }
+
       isRestoringRef.current = true;
       setSelectedHistoryId(history.id);
       setPresent(createDefaultState(history.rows));
@@ -515,6 +547,32 @@ export function useSemesterCalculator() {
     },
     [persistTimelineNow, storageApi]
   );
+
+  const discardSelectedTemplateHistoryIfEmpty = useCallback(() => {
+    const currentHistoryId = selectedHistoryIdRef.current;
+    if (!currentHistoryId) return false;
+
+    const currentHistory = findHistoryById(currentHistoryId, historiesRef.current);
+    if (!isTemplateHistoryEmpty(currentHistory, presentRef.current.rows)) {
+      return false;
+    }
+
+    clearPendingHistoryPush();
+    storageApi.clearHistoryTimeline(currentHistoryId);
+    setHistories((currentHistories) =>
+      currentHistories.filter((history) => history.id !== currentHistoryId)
+    );
+
+    isRestoringRef.current = true;
+    setSelectedHistoryId(null);
+    setPresent(createDefaultState());
+    setPast([]);
+    setFuture([]);
+    queueMicrotask(() => {
+      isRestoringRef.current = false;
+    });
+    return true;
+  }, [storageApi]);
 
   const createHistoryFromTemplate = useCallback(
     (templateId) => {
@@ -731,6 +789,49 @@ export function useSemesterCalculator() {
     return removed;
   }, []);
 
+  const updateTemplate = useCallback((templateId, updates = {}) => {
+    const normalizedTemplateId = String(templateId ?? "").trim();
+    if (!normalizedTemplateId) return false;
+
+    let didUpdate = false;
+    setTemplates((currentTemplates) =>
+      currentTemplates.map((template) => {
+        if (template.id !== normalizedTemplateId) return template;
+
+        const nextNameRaw =
+          updates?.name === undefined ? template.name : String(updates.name).trim();
+        const nextYearRaw =
+          updates?.year === undefined ? template.year : String(updates.year).trim();
+        const nextSemesterRaw =
+          updates?.semester === undefined
+            ? template.semester
+            : String(updates.semester).trim();
+
+        const nextName = nextNameRaw || template.name;
+        const nextYear = nextYearRaw || template.year;
+        const nextSemester = nextSemesterRaw || template.semester;
+
+        if (
+          nextName === template.name &&
+          nextYear === template.year &&
+          nextSemester === template.semester
+        ) {
+          return template;
+        }
+
+        didUpdate = true;
+        return {
+          ...template,
+          name: nextName,
+          year: nextYear,
+          semester: nextSemester
+        };
+      })
+    );
+
+    return didUpdate;
+  }, []);
+
   function updateRow(index, key, value) {
     if (!selectedHistoryIdRef.current) return;
 
@@ -888,7 +989,9 @@ export function useSemesterCalculator() {
       deleteHistory,
       toggleHistoryPinned,
       createTemplateFromHistory,
-      deleteTemplate
+      deleteTemplate,
+      updateTemplate,
+      discardSelectedTemplateHistoryIfEmpty
     }
   };
 }

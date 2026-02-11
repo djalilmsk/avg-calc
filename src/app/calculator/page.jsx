@@ -9,11 +9,11 @@ function ErrorState({ title, message }) {
   return (
     <div className="mx-auto flex h-full w-full max-w-7xl items-center justify-center px-4">
       <div className="w-full max-w-xl rounded-2xl p-6 text-center">
-        <h2 className="text-xl font-semibold text-zinc-100">{title}</h2>
-        <p className="mt-2 text-sm text-zinc-400">{message}</p>
+        <h2 className="text-xl font-semibold text-foreground">{title}</h2>
+        <p className="mt-2 text-sm text-muted-foreground">{message}</p>
         <Link
           to="/"
-          className="mt-4 inline-flex rounded-lg border border-[#3a3a3a] bg-[#2a2b2f] px-4 py-2 text-sm text-zinc-100 hover:bg-[#35363b]"
+          className="mt-4 inline-flex rounded-lg border border-border bg-secondary px-4 py-2 text-sm text-foreground hover:bg-accent"
         >
           Back to Home
         </Link>
