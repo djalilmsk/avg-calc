@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, forwardRef } from "react";
 import { useSidebar } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 
 function clampToRange(value, min, max, fallback = min) {
   const numeric = Number(value);
@@ -11,7 +12,10 @@ function roundTo2(value) {
   return Math.round(value * 100) / 100;
 }
 
-export default function AddModuleBar({ onAdd }) {
+const AddModuleBar = forwardRef(function AddModuleBar(
+  { onAdd, className = "" },
+  ref,
+) {
   const { open, isMobile } = useSidebar();
   const [isMobileComposerOpen, setIsMobileComposerOpen] = useState(false);
   const [name, setName] = useState("");
@@ -70,6 +74,18 @@ export default function AddModuleBar({ onAdd }) {
     setExamWeight(nextExam);
   }
 
+  function handleNameInputKeyDown(event) {
+    if (event.key !== "Enter") return;
+    event.preventDefault();
+    handleAdd();
+  }
+
+  function handleComposerInputKeyDown(event) {
+    if (event.key !== "Enter") return;
+    event.preventDefault();
+    handleAdd();
+  }
+
   function handleAdd() {
     const trimmed = name.trim();
     if (!trimmed) return;
@@ -106,7 +122,9 @@ export default function AddModuleBar({ onAdd }) {
     return (
       <button
         onClick={() => setIsMobileComposerOpen(true)}
-        className="fixed right-5 bottom-[max(1rem,env(safe-area-inset-bottom))] z-40 flex size-12 items-center justify-center border border-[#3a3a3a] bg-[#16171a]/95 text-xl font-semibold text-zinc-100 backdrop-blur rounded-full"
+        className={
+          "fixed right-5 bottom-[max(1rem,env(safe-area-inset-bottom))] z-40 flex size-12 items-center justify-center border border-[#3a3a3a] bg-[#16171a]/95 text-xl font-semibold text-zinc-100 backdrop-blur rounded-full"
+        }
         aria-label="Open add module bar"
         title="Add module"
       >
@@ -117,16 +135,21 @@ export default function AddModuleBar({ onAdd }) {
 
   return (
     <div
-      className="fixed right-0 bottom-[max(1rem,env(safe-area-inset-bottom))] z-40 transition-[left] duration-200 ease-linear"
+      ref={ref}
+      className={cn(
+        "fixed right-0 bottom-[max(1rem,env(safe-area-inset-bottom))] z-40 transition-[left,bottom,transform] duration-200 ease-linear px-4",
+        className,
+      )}
       style={{ left: !isMobile && open ? "var(--sidebar-width)" : "0px" }}
     >
-      <div className="mx-auto w-full max-w-7xl px-3 sm:px-7">
+      <div className="mx-auto w-full max-w-7xl px-3">
         <div className="w-full rounded-xl border border-[#333] bg-[#1f2024]/95 p-2 backdrop-blur md:rounded-2xl sm:p-3">
           {isMobile ? (
             <div className="flex w-full flex-col gap-2">
               <input
                 value={name}
                 onChange={(event) => setName(event.target.value)}
+                onKeyDown={handleNameInputKeyDown}
                 placeholder="Module name"
                 className="calc-input-add w-full"
               />
@@ -135,6 +158,7 @@ export default function AddModuleBar({ onAdd }) {
                 step="1"
                 value={coef}
                 onChange={(event) => setCoef(event.target.value)}
+                onKeyDown={handleComposerInputKeyDown}
                 placeholder="Coef"
                 className="calc-input w-full"
               />
@@ -145,7 +169,10 @@ export default function AddModuleBar({ onAdd }) {
                   min="0"
                   max="1"
                   value={examWeight}
-                  onChange={(event) => handleExamWeightChange(event.target.value)}
+                  onChange={(event) =>
+                    handleExamWeightChange(event.target.value)
+                  }
+                  onKeyDown={handleComposerInputKeyDown}
                   placeholder="Per Ex"
                   disabled={lockWeights}
                   className="calc-input w-full"
@@ -157,6 +184,7 @@ export default function AddModuleBar({ onAdd }) {
                   max="1"
                   value={caWeight}
                   onChange={(event) => handleTdWeightChange(event.target.value)}
+                  onKeyDown={handleComposerInputKeyDown}
                   placeholder="Per TD"
                   disabled={lockWeights}
                   className="calc-input w-full"
@@ -167,7 +195,9 @@ export default function AddModuleBar({ onAdd }) {
                   <input
                     type="checkbox"
                     checked={includeExam}
-                    onChange={(event) => handleIncludeExamChange(event.target.checked)}
+                    onChange={(event) =>
+                      handleIncludeExamChange(event.target.checked)
+                    }
                     className="size-5 mr-1 accent-zinc-500 rounded-full"
                   />
                   is Exam
@@ -176,7 +206,9 @@ export default function AddModuleBar({ onAdd }) {
                   <input
                     type="checkbox"
                     checked={includeCa}
-                    onChange={(event) => handleIncludeCaChange(event.target.checked)}
+                    onChange={(event) =>
+                      handleIncludeCaChange(event.target.checked)
+                    }
                     className="size-5 mr-1 accent-zinc-500 rounded-full"
                   />
                   is TD
@@ -203,6 +235,7 @@ export default function AddModuleBar({ onAdd }) {
               <input
                 value={name}
                 onChange={(event) => setName(event.target.value)}
+                onKeyDown={handleNameInputKeyDown}
                 placeholder="Module name"
                 className="calc-input-add min-w-[100px] flex-[999_1_100px]"
               />
@@ -211,6 +244,7 @@ export default function AddModuleBar({ onAdd }) {
                 step="1"
                 value={coef}
                 onChange={(event) => setCoef(event.target.value)}
+                onKeyDown={handleComposerInputKeyDown}
                 placeholder="Coef"
                 className="calc-input min-w-0 flex-[1_1_84px]"
               />
@@ -221,6 +255,7 @@ export default function AddModuleBar({ onAdd }) {
                 max="1"
                 value={examWeight}
                 onChange={(event) => handleExamWeightChange(event.target.value)}
+                onKeyDown={handleComposerInputKeyDown}
                 placeholder="Ex W"
                 disabled={lockWeights}
                 className="calc-input min-w-0 flex-[1_1_84px]"
@@ -232,6 +267,7 @@ export default function AddModuleBar({ onAdd }) {
                 max="1"
                 value={caWeight}
                 onChange={(event) => handleTdWeightChange(event.target.value)}
+                onKeyDown={handleComposerInputKeyDown}
                 placeholder="TD W"
                 disabled={lockWeights}
                 className="calc-input min-w-0 flex-[1_1_84px]"
@@ -240,7 +276,9 @@ export default function AddModuleBar({ onAdd }) {
                 <input
                   type="checkbox"
                   checked={includeExam}
-                  onChange={(event) => handleIncludeExamChange(event.target.checked)}
+                  onChange={(event) =>
+                    handleIncludeExamChange(event.target.checked)
+                  }
                   className="size-5 mr-1 accent-zinc-500 rounded-full"
                 />
                 Ex
@@ -249,7 +287,9 @@ export default function AddModuleBar({ onAdd }) {
                 <input
                   type="checkbox"
                   checked={includeCa}
-                  onChange={(event) => handleIncludeCaChange(event.target.checked)}
+                  onChange={(event) =>
+                    handleIncludeCaChange(event.target.checked)
+                  }
                   className="size-5 mr-1 accent-zinc-500 rounded-full"
                 />
                 TD
@@ -266,4 +306,6 @@ export default function AddModuleBar({ onAdd }) {
       </div>
     </div>
   );
-}
+});
+
+export default AddModuleBar;

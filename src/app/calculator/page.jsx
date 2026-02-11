@@ -1,0 +1,120 @@
+import { useEffect, useMemo, useRef } from "react";
+import { Link, useNavigate, useOutletContext, useParams } from "react-router";
+import { Spinner } from "@/components/ui/spinner";
+import ModulesMobileList from "./components/ModulesMobileList";
+import ModulesTable from "./components/ModulesTable";
+import SummaryBar from "./components/SummaryBar";
+
+function ErrorState({ title, message }) {
+  return (
+    <div className="mx-auto flex h-full w-full max-w-7xl items-center justify-center px-4">
+      <div className="w-full max-w-xl rounded-2xl p-6 text-center">
+        <h2 className="text-xl font-semibold text-zinc-100">{title}</h2>
+        <p className="mt-2 text-sm text-zinc-400">{message}</p>
+        <Link
+          to="/"
+          className="mt-4 inline-flex rounded-lg border border-[#3a3a3a] bg-[#2a2b2f] px-4 py-2 text-sm text-zinc-100 hover:bg-[#35363b]"
+        >
+          Back to Home
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+function LoadingState() {
+  return (
+    <div className="mx-auto flex h-full w-full max-w-7xl items-center justify-center px-4">
+      <Spinner />
+    </div>
+  );
+}
+
+export default function SemesterAverageApp() {
+  const { computed, actions, getHistoryById, selectedHistoryId } =
+    useOutletContext();
+  const navigate = useNavigate();
+  const params = useParams();
+  const routeHistoryId = params["template-id"];
+  const selectHistoryRef = useRef(actions.selectHistory);
+
+  const routeHistory = useMemo(() => {
+    if (!routeHistoryId) return null;
+    return getHistoryById(routeHistoryId);
+  }, [getHistoryById, routeHistoryId]);
+  const isLoadingHistory =
+    Boolean(routeHistoryId) &&
+    Boolean(routeHistory) &&
+    selectedHistoryId !== routeHistoryId;
+
+  useEffect(() => {
+    selectHistoryRef.current = actions.selectHistory;
+  }, [actions.selectHistory]);
+
+  useEffect(() => {
+    if (!routeHistoryId || !routeHistory) return;
+    if (selectedHistoryId === routeHistoryId) return;
+    selectHistoryRef.current(routeHistoryId);
+  }, [routeHistory, routeHistoryId, selectedHistoryId]);
+
+  if (!routeHistoryId) {
+    return (
+      <ErrorState
+        title="Missing history id"
+        message="No history id was provided in the URL."
+      />
+    );
+  }
+
+  if (!routeHistory) {
+    return (
+      <ErrorState
+        title="404 History not found"
+        message={`History "${routeHistoryId}" does not exist.`}
+      />
+    );
+  }
+
+  if (isLoadingHistory) {
+    return <LoadingState />;
+  }
+
+  function handleRemoveRow(index) {
+    const rowsCount = computed.perRow.length;
+    if (rowsCount <= 1 && routeHistoryId) {
+      actions.deleteHistory(routeHistoryId);
+      navigate("/");
+      return;
+    }
+
+    actions.removeRow(index);
+  }
+
+  return (
+    <div className="mx-auto flex h-full w-full max-w-7xl flex-col">
+      <div className="flex-1 overflow-y-auto px-3 pb-44 sm:px-7 sm:pb-36 w-full">
+        <div className="mx-auto max-w-full">
+          <ModulesTable
+            rows={computed.perRow}
+            onUpdateRow={actions.updateRow}
+            onUpdateRowStats={actions.updateRowStats}
+            onRemoveRow={handleRemoveRow}
+          />
+
+          <ModulesMobileList
+            rows={computed.perRow}
+            onUpdateRow={actions.updateRow}
+            onUpdateRowStats={actions.updateRowStats}
+            onRemoveRow={handleRemoveRow}
+          />
+
+          <SummaryBar
+            sumCoef={computed.sumCoef}
+            semesterAvg={computed.semesterAvg}
+            rows={computed.perRow}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}

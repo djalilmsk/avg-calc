@@ -8,8 +8,13 @@ import path from "node:path";
 export default defineConfig({
   resolve: {
     alias: {
+      // eslint-disable-next-line no-undef
       "@": path.resolve(__dirname, "./src"),
     },
+  },
+  server: {
+    host: "0.0.0.0",
+    port: 5000,
   },
   plugins: [
     react(),
@@ -22,8 +27,8 @@ export default defineConfig({
         short_name: "Semester Avg",
         description:
           "Calculate your weighted semester average easily. Input module grades, coefficients, and weights to track your academic performance.",
-        theme_color: "#171717",
-        background_color: "#171717",
+        theme_color: "#000000",
+        background_color: "#000000",
         display: "standalone",
         orientation: "portrait",
         scope: "/",
