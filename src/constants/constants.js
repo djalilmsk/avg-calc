@@ -5,7 +5,7 @@ export const STORAGE_KEY = "semester_avg_app_v1";
 export const HISTORY_LIMIT = 80;
 export const SNAPSHOT_LIMIT = 30;
 export const SNAPSHOT_VISIBLE_LIMIT = 6;
-export const MAX_TEMPLATE_STORAGE = 4;
+export const MAX_TEMPLATE_STORAGE = 12;
 
 function createRow(
   name,
