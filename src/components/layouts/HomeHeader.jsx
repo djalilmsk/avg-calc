@@ -1,19 +1,22 @@
-import { useSemesterCalculator } from "@/app/calculator/hooks/useSemesterCalculator";
 import { SidebarToggleButton } from "../ui/side-bar-toggle";
 import { Github } from "lucide-react";
 import HistoryControls from "@/app/calculator/components/HistoryControls";
+import { Link } from "react-router";
 
-function HomeHeader() {
-  const { history, actions } = useSemesterCalculator();
-
+function HomeHeader({ history, actions }) {
   return (
     <>
-      <h1 className="text-2xl font-bold text-slate-100 sm:text-3xl sm:hidden mx-auto -mb-1 pt-3 pb-2">
-        CookedCalc
-      </h1>
+      <Link
+        to="/"
+        className="text-gray-400 text-center hover:text-gray-200 transition-colors"
+      >
+        <h1 className="text-2xl font-bold sm:text-3xl sm:hidden mx-auto -mb-1 pt-1 pb-2">
+          CookedCalc
+        </h1>
+      </Link>
 
-      <div className="shrink-0 px-3 mx-auto flex w-full max-w-7xl flex-col pt-2">
-        <div className="flex items-center justify-between gap-2 pb-2 py-4">
+      <div className="shrink-0 px-3 mx-auto flex w-full max-w-7xl flex-col">
+        <div className="flex items-center justify-between gap-2 pb-2 py-2">
           <div className="flex gap-2">
             <SidebarToggleButton />
             <a
@@ -33,9 +36,14 @@ function HomeHeader() {
             </a>
           </div>
 
-          <h1 className="text-xl font-bold text-slate-100 sm:text-3xl max-sm:hidden">
-            CookedCalc
-          </h1>
+          <Link
+            to="/"
+            className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
+          >
+            <h1 className="text-xl font-bold sm:text-3xl max-sm:hidden">
+              CookedCalc
+            </h1>
+          </Link>
 
           <div className="flex items-center gap-2">
             <HistoryControls

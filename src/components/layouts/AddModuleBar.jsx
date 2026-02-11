@@ -74,6 +74,18 @@ const AddModuleBar = forwardRef(function AddModuleBar(
     setExamWeight(nextExam);
   }
 
+  function handleNameInputKeyDown(event) {
+    if (event.key !== "Enter") return;
+    event.preventDefault();
+    handleAdd();
+  }
+
+  function handleComposerInputKeyDown(event) {
+    if (event.key !== "Enter") return;
+    event.preventDefault();
+    handleAdd();
+  }
+
   function handleAdd() {
     const trimmed = name.trim();
     if (!trimmed) return;
@@ -137,6 +149,7 @@ const AddModuleBar = forwardRef(function AddModuleBar(
               <input
                 value={name}
                 onChange={(event) => setName(event.target.value)}
+                onKeyDown={handleNameInputKeyDown}
                 placeholder="Module name"
                 className="calc-input-add w-full"
               />
@@ -145,6 +158,7 @@ const AddModuleBar = forwardRef(function AddModuleBar(
                 step="1"
                 value={coef}
                 onChange={(event) => setCoef(event.target.value)}
+                onKeyDown={handleComposerInputKeyDown}
                 placeholder="Coef"
                 className="calc-input w-full"
               />
@@ -158,6 +172,7 @@ const AddModuleBar = forwardRef(function AddModuleBar(
                   onChange={(event) =>
                     handleExamWeightChange(event.target.value)
                   }
+                  onKeyDown={handleComposerInputKeyDown}
                   placeholder="Per Ex"
                   disabled={lockWeights}
                   className="calc-input w-full"
@@ -169,6 +184,7 @@ const AddModuleBar = forwardRef(function AddModuleBar(
                   max="1"
                   value={caWeight}
                   onChange={(event) => handleTdWeightChange(event.target.value)}
+                  onKeyDown={handleComposerInputKeyDown}
                   placeholder="Per TD"
                   disabled={lockWeights}
                   className="calc-input w-full"
@@ -219,6 +235,7 @@ const AddModuleBar = forwardRef(function AddModuleBar(
               <input
                 value={name}
                 onChange={(event) => setName(event.target.value)}
+                onKeyDown={handleNameInputKeyDown}
                 placeholder="Module name"
                 className="calc-input-add min-w-[100px] flex-[999_1_100px]"
               />
@@ -227,6 +244,7 @@ const AddModuleBar = forwardRef(function AddModuleBar(
                 step="1"
                 value={coef}
                 onChange={(event) => setCoef(event.target.value)}
+                onKeyDown={handleComposerInputKeyDown}
                 placeholder="Coef"
                 className="calc-input min-w-0 flex-[1_1_84px]"
               />
@@ -237,6 +255,7 @@ const AddModuleBar = forwardRef(function AddModuleBar(
                 max="1"
                 value={examWeight}
                 onChange={(event) => handleExamWeightChange(event.target.value)}
+                onKeyDown={handleComposerInputKeyDown}
                 placeholder="Ex W"
                 disabled={lockWeights}
                 className="calc-input min-w-0 flex-[1_1_84px]"
@@ -248,6 +267,7 @@ const AddModuleBar = forwardRef(function AddModuleBar(
                 max="1"
                 value={caWeight}
                 onChange={(event) => handleTdWeightChange(event.target.value)}
+                onKeyDown={handleComposerInputKeyDown}
                 placeholder="TD W"
                 disabled={lockWeights}
                 className="calc-input min-w-0 flex-[1_1_84px]"
