@@ -4,11 +4,15 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import { ArrowRight, Trash2 } from "lucide-react";
+import { ArrowRight, Pen, Trash2 } from "lucide-react";
 
-function TemplateCard({ template, onStart, onDelete }) {
+function TemplateCard({ template, onStart, onDelete, onEdit }) {
   function handleOpenTemplate() {
     onStart?.(template.id);
+  }
+
+  function handleEditTemplate() {
+    onEdit?.(template);
   }
 
   function handleDeleteTemplate() {
@@ -25,20 +29,23 @@ function TemplateCard({ template, onStart, onDelete }) {
         <button
           type="button"
           onClick={handleOpenTemplate}
-          className="flex flex-col justify-between rounded-2xl bg-[#2a2b2f]/60 lg:p-5 p-4 hover:bg-[rgb(58,59,63)] w-full min-h-36 border border-[#4a4b4f] text-white transition-colors duration-200 relative group cursor-pointer"
+          className="group relative flex min-h-36 w-full cursor-pointer flex-col justify-between rounded-2xl border border-border bg-secondary/65 p-4 text-foreground transition-colors duration-200 hover:bg-accent lg:p-5"
         >
-          <ArrowRight className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 group-hover:-rotate-45 transition-all  duration-200 flex flex-col gap-3" />
-          <div className="flex flex-wrap gap-2 text-sm text-gray-400 pr-8">
+          <ArrowRight className="absolute top-4 right-4 flex flex-col gap-3 opacity-0 transition-all duration-200 group-hover:-rotate-45 group-hover:opacity-100" />
+          <div className="flex flex-wrap gap-2 pr-8 text-sm text-muted-foreground">
             <span>{template.year}</span>
-            <span className="text-gray-600">•</span>
+            <span className="text-muted-foreground/70">&middot;</span>
             <span>{template.semester}</span>
           </div>
-          <h1 className="text-xl font-semibold leading-snug line-clamp-2 text-left">
+          <h1 className="font-heading-token text-left text-xl font-semibold leading-snug line-clamp-2">
             {template.name}
           </h1>
         </button>
       </ContextMenuTrigger>
       <ContextMenuContent>
+        <ContextMenuItem onSelect={handleEditTemplate}>
+          <Pen /> Edit
+        </ContextMenuItem>
         <ContextMenuItem variant="destructive" onSelect={handleDeleteTemplate}>
           <Trash2 /> Delete
         </ContextMenuItem>
