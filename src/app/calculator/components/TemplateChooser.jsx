@@ -1,9 +1,9 @@
 export default function TemplateChooser({ templates, onChoose }) {
   return (
     <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/65 p-4">
-      <div className="w-full max-w-3xl rounded-2xl border border-[#383838] bg-[#1d1e23] p-5">
-        <h2 className="text-xl font-semibold text-zinc-100">Choose a template</h2>
-        <p className="mt-1 text-sm text-zinc-400">
+      <div className="w-full max-w-3xl rounded-2xl border border-border bg-card p-5">
+        <h2 className="text-xl font-semibold text-foreground">Choose a template</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
           Select one to start your semester calculator.
         </p>
 
@@ -12,10 +12,10 @@ export default function TemplateChooser({ templates, onChoose }) {
             <button
               key={template.id}
               onClick={() => onChoose(template.id)}
-              className="rounded-xl border border-[#3a3a3a] bg-[#24252b] p-4 text-left hover:bg-[#2b2c33]"
+              className="rounded-xl border border-border bg-secondary p-4 text-left hover:bg-accent"
             >
-              <div className="font-semibold text-zinc-100">{template.title}</div>
-              <div className="mt-1 text-xs text-zinc-400">{template.subtitle}</div>
+              <div className="font-semibold text-foreground">{template.title}</div>
+              <div className="mt-1 text-xs text-muted-foreground">{template.subtitle}</div>
             </button>
           ))}
         </div>

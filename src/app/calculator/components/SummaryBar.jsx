@@ -1,9 +1,10 @@
 import ayayay from "@/assets/ayayay-didine.gif";
+import { StatChip } from "@/components/ui/calc-ui";
 
 function EmptyValue({ value }) {
   const displayValue = value === "" ? "-" : value;
   const isLow = value !== "" && Number(value) < 10;
-  return <span className={isLow ? "text-red-500" : ""}>{displayValue}</span>;
+  return <span className={isLow ? "text-destructive" : ""}>{displayValue}</span>;
 }
 
 export default function SummaryBar({ sumCoef, semesterAvg, rows = [] }) {
@@ -23,25 +24,23 @@ export default function SummaryBar({ sumCoef, semesterAvg, rows = [] }) {
 
   return (
     <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-      <div className="stat-chip">
-        <span className="font-semibold text-slate-100">
-          Total counted coef:
-        </span>{" "}
+      <StatChip>
+        <span className="font-semibold text-foreground">Total counted coef:</span>{" "}
         {sumCoef || 0}
-      </div>
+      </StatChip>
 
       {isLowAverage && (
         <img
           src={ayayay}
           alt="Low average reaction"
-          className="size-34 rounded object-cover max-md:hidden"
+          className="size-34 rounded-[var(--radius-md)] object-cover max-md:hidden"
           loading="lazy"
         />
       )}
 
-      <div className="w-full rounded-xl border border-[#4a4a4a] bg-[#2a2a2f] px-5 py-3 text-slate-100 sm:w-auto flex justify-between">
+      <div className="flex w-full justify-between rounded-[var(--radius-xl)] border border-border bg-secondary px-5 py-3 text-foreground sm:w-auto">
         <div>
-          <div className="text-sm font-semibold text-slate-300">
+          <div className="text-sm font-semibold text-muted-foreground">
             Semester average
           </div>
           <div className="flex flex-col items-start gap-2 text-2xl font-bold">
@@ -49,8 +48,8 @@ export default function SummaryBar({ sumCoef, semesterAvg, rows = [] }) {
             {isLowAverage && (
               <>
                 <br />
-                <div className="text-red-500 text-sm font-semibold">
-                  Rattrapage Yonadi <span className="text-xl">💔</span>
+                <div className="text-sm font-semibold text-destructive">
+                  Rattrapage Yonadi (heartbreak)
                 </div>
               </>
             )}
@@ -60,7 +59,7 @@ export default function SummaryBar({ sumCoef, semesterAvg, rows = [] }) {
           <img
             src={ayayay}
             alt="Low average reaction"
-            className="size-34 rounded object-cover md:hidden"
+            className="size-34 rounded-[var(--radius-md)] object-cover md:hidden"
             loading="lazy"
           />
         )}

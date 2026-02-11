@@ -1,3 +1,11 @@
+import {
+  CalcButton,
+  CalcInput,
+  CalcLabel,
+  SoftPanel,
+  WarningBox,
+} from "@/components/ui/calc-ui";
+
 export default function WeightsForm({
   examWeight,
   caWeight,
@@ -8,42 +16,43 @@ export default function WeightsForm({
 }) {
   return (
     <>
-      <div className="soft-panel mt-6 grid grid-cols-1 items-end gap-4 rounded-2xl p-4 sm:grid-cols-3">
+      <SoftPanel className="mt-6 grid grid-cols-1 items-end gap-4 rounded-2xl p-4 sm:grid-cols-3">
         <div>
-          <label className="calc-label block">Exam weight</label>
-          <input
+          <CalcLabel className="block">Exam weight</CalcLabel>
+          <CalcInput
             type="number"
             step="0.01"
             value={examWeight}
             onChange={(event) => onExamWeightChange(event.target.value)}
-            className="calc-input mt-1"
+            className="mt-1"
           />
         </div>
 
         <div>
-          <label className="calc-label block">TD weight</label>
-          <input
+          <CalcLabel className="block">TD weight</CalcLabel>
+          <CalcInput
             type="number"
             step="0.01"
             value={caWeight}
             onChange={(event) => onCaWeightChange(event.target.value)}
-            className="calc-input mt-1"
+            className="mt-1"
           />
         </div>
 
-        <button
+        <CalcButton
           onClick={onNormalize}
-          className="calc-btn calc-btn--primary cursor-pointer"
+          variant="primary"
+          className="cursor-pointer"
           title="Make (Exam + TD) = 1"
         >
           Normalize weights
-        </button>
-      </div>
+        </CalcButton>
+      </SoftPanel>
 
       {!showWarning && (
-        <div className="warning-box mt-3 px-4 py-3 text-sm">
+        <WarningBox className="mt-3 px-4 py-3 text-sm">
           Warning: Exam + TD weights should equal 1 (example: 0.6 + 0.4).
-        </div>
+        </WarningBox>
       )}
     </>
   );
