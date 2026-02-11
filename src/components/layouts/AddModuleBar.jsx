@@ -1,6 +1,13 @@
 import { useState, forwardRef } from "react";
 import { useSidebar } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import {
+  CalcButton,
+  CalcCheckChip,
+  CalcInput,
+  CalcInputAdd,
+  SoftIconButton,
+} from "@/components/ui/calc-ui";
 
 function clampToRange(value, min, max, fallback = min) {
   const numeric = Number(value);
@@ -120,16 +127,14 @@ const AddModuleBar = forwardRef(function AddModuleBar(
 
   if (isMobile && !isMobileComposerOpen) {
     return (
-      <button
+      <SoftIconButton
         onClick={() => setIsMobileComposerOpen(true)}
-        className={
-          "fixed right-5 bottom-[max(1rem,env(safe-area-inset-bottom))] z-40 flex size-12 items-center justify-center border border-[#3a3a3a] bg-[#16171a]/95 text-xl font-semibold text-zinc-100 backdrop-blur rounded-full"
-        }
+        className="fixed right-5 bottom-[max(1rem,env(safe-area-inset-bottom))] z-40 flex size-12 items-center justify-center rounded-full bg-sidebar/95 text-xl font-semibold backdrop-blur"
         aria-label="Open add module bar"
         title="Add module"
       >
         +
-      </button>
+      </SoftIconButton>
     );
   }
 
@@ -143,27 +148,27 @@ const AddModuleBar = forwardRef(function AddModuleBar(
       style={{ left: !isMobile && open ? "var(--sidebar-width)" : "0px" }}
     >
       <div className="mx-auto w-full max-w-7xl px-3">
-        <div className="w-full rounded-xl border border-[#333] bg-[#1f2024]/95 p-2 backdrop-blur md:rounded-2xl sm:p-3">
+        <div className="w-full rounded-[var(--radius-2xl)] border border-border bg-card/95 p-2 backdrop-blur sm:p-3">
           {isMobile ? (
             <div className="flex w-full flex-col gap-2">
-              <input
+              <CalcInputAdd
                 value={name}
                 onChange={(event) => setName(event.target.value)}
                 onKeyDown={handleNameInputKeyDown}
                 placeholder="Module name"
-                className="calc-input-add w-full"
+                className="w-full"
               />
-              <input
+              <CalcInput
                 type="number"
                 step="1"
                 value={coef}
                 onChange={(event) => setCoef(event.target.value)}
                 onKeyDown={handleComposerInputKeyDown}
                 placeholder="Coef"
-                className="calc-input w-full"
+                className="w-full"
               />
               <div className="grid grid-cols-2 gap-2">
-                <input
+                <CalcInput
                   type="number"
                   step="0.01"
                   min="0"
@@ -175,9 +180,9 @@ const AddModuleBar = forwardRef(function AddModuleBar(
                   onKeyDown={handleComposerInputKeyDown}
                   placeholder="Per Ex"
                   disabled={lockWeights}
-                  className="calc-input w-full"
+                  className="w-full"
                 />
-                <input
+                <CalcInput
                   type="number"
                   step="0.01"
                   min="0"
@@ -187,68 +192,70 @@ const AddModuleBar = forwardRef(function AddModuleBar(
                   onKeyDown={handleComposerInputKeyDown}
                   placeholder="Per TD"
                   disabled={lockWeights}
-                  className="calc-input w-full"
+                  className="w-full"
                 />
               </div>
               <div className="grid grid-cols-2 gap-2">
-                <label className="flex min-h-11 items-center gap-2 rounded-lg bg-[#2b2c32] px-4 text-sm text-zinc-300">
+                <CalcCheckChip>
                   <input
                     type="checkbox"
                     checked={includeExam}
                     onChange={(event) =>
                       handleIncludeExamChange(event.target.checked)
                     }
-                    className="size-5 mr-1 accent-zinc-500 rounded-full"
+                    className="mr-1 size-5 rounded-full accent-muted-foreground"
                   />
                   is Exam
-                </label>
-                <label className="flex min-h-11 items-center gap-2 rounded-lg bg-[#2b2c32] px-4 text-sm text-zinc-300">
+                </CalcCheckChip>
+                <CalcCheckChip>
                   <input
                     type="checkbox"
                     checked={includeCa}
                     onChange={(event) =>
                       handleIncludeCaChange(event.target.checked)
                     }
-                    className="size-5 mr-1 accent-zinc-500 rounded-full"
+                    className="mr-1 size-5 rounded-full accent-muted-foreground"
                   />
                   is TD
-                </label>
+                </CalcCheckChip>
               </div>
               <div className="grid grid-cols-2 gap-2">
-                <button
+                <CalcButton
                   onClick={() => setIsMobileComposerOpen(false)}
-                  className="calc-btn calc-btn--soft cursor-pointer"
+                  variant="soft"
+                  className="cursor-pointer"
                   aria-label="Close add module bar"
                 >
                   Close
-                </button>
-                <button
+                </CalcButton>
+                <CalcButton
                   onClick={handleAdd}
-                  className="calc-btn calc-btn--primary cursor-pointer rounded-lg"
+                  variant="primary"
+                  className="cursor-pointer"
                 >
                   +
-                </button>
+                </CalcButton>
               </div>
             </div>
           ) : (
             <div className="flex w-full flex-wrap items-center gap-2">
-              <input
+              <CalcInputAdd
                 value={name}
                 onChange={(event) => setName(event.target.value)}
                 onKeyDown={handleNameInputKeyDown}
                 placeholder="Module name"
-                className="calc-input-add min-w-[100px] flex-[999_1_100px]"
+                className="min-w-[100px] flex-[999_1_100px]"
               />
-              <input
+              <CalcInput
                 type="number"
                 step="1"
                 value={coef}
                 onChange={(event) => setCoef(event.target.value)}
                 onKeyDown={handleComposerInputKeyDown}
                 placeholder="Coef"
-                className="calc-input min-w-0 flex-[1_1_84px]"
+                className="min-w-0 flex-[1_1_84px]"
               />
-              <input
+              <CalcInput
                 type="number"
                 step="0.01"
                 min="0"
@@ -258,9 +265,9 @@ const AddModuleBar = forwardRef(function AddModuleBar(
                 onKeyDown={handleComposerInputKeyDown}
                 placeholder="Ex W"
                 disabled={lockWeights}
-                className="calc-input min-w-0 flex-[1_1_84px]"
+                className="min-w-0 flex-[1_1_84px]"
               />
-              <input
+              <CalcInput
                 type="number"
                 step="0.01"
                 min="0"
@@ -270,36 +277,37 @@ const AddModuleBar = forwardRef(function AddModuleBar(
                 onKeyDown={handleComposerInputKeyDown}
                 placeholder="TD W"
                 disabled={lockWeights}
-                className="calc-input min-w-0 flex-[1_1_84px]"
+                className="min-w-0 flex-[1_1_84px]"
               />
-              <label className="flex min-h-11 items-center gap-2 rounded-lg bg-[#2b2c32] px-4 text-sm text-zinc-300">
+              <CalcCheckChip>
                 <input
                   type="checkbox"
                   checked={includeExam}
                   onChange={(event) =>
                     handleIncludeExamChange(event.target.checked)
                   }
-                  className="size-5 mr-1 accent-zinc-500 rounded-full"
+                  className="mr-1 size-5 rounded-full accent-muted-foreground"
                 />
                 Ex
-              </label>
-              <label className="flex items-center gap-2 rounded-lg bg-[#2b2c32] px-4 text-sm text-zinc-300 min-h-11">
+              </CalcCheckChip>
+              <CalcCheckChip>
                 <input
                   type="checkbox"
                   checked={includeCa}
                   onChange={(event) =>
                     handleIncludeCaChange(event.target.checked)
                   }
-                  className="size-5 mr-1 accent-zinc-500 rounded-full"
+                  className="mr-1 size-5 rounded-full accent-muted-foreground"
                 />
                 TD
-              </label>
-              <button
+              </CalcCheckChip>
+              <CalcButton
                 onClick={handleAdd}
-                className="calc-btn calc-btn--primary ml-auto cursor-pointer rounded-full"
+                variant="primary"
+                className="ml-auto cursor-pointer"
               >
                 +
-              </button>
+              </CalcButton>
             </div>
           )}
         </div>
