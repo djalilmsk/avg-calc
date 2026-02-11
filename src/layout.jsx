@@ -3,14 +3,16 @@ import { useSemesterCalculator } from "@/app/calculator/hooks/useSemesterCalcula
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { startSidebarResize } from "./lib/side-bar-resize";
-import { useLocation } from "react-router";
+import { Outlet, useLocation, useNavigate } from "react-router";
 import HomeHeader from "./components/layouts/HomeHeader";
 import AddModuleBar from "./components/layouts/AddModuleBar";
-import AnimatedOutlet from "./components/AnimatedOutlet";
 
 function Layout() {
-  const route = useLocation().pathname;
-  const { snapshots, actions } = useSemesterCalculator();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const route = location.pathname;
+  const calculator = useSemesterCalculator();
+  const { actions, history, histories, selectedHistoryId } = calculator;
 
   const [sidebarWidth, setSidebarWidth] = useState(() => {
     if (typeof window === "undefined") return 300;
@@ -56,6 +58,16 @@ function Layout() {
       isResizingRef,
     );
 
+  const handleAddFromHome = (payload) => {
+    const historyItem = actions.createHistoryFromModule(payload);
+    if (!historyItem) return;
+    navigate(`/calc/${historyItem.id}`);
+  };
+
+  const activeRouteHistoryId = route.startsWith("/calc/")
+    ? route.slice("/calc/".length)
+    : selectedHistoryId;
+
   return (
     <SidebarProvider
       defaultOpen
@@ -63,20 +75,34 @@ function Layout() {
       style={{ "--sidebar-width": `${sidebarWidth}px` }}
     >
       <SnapshotsList
-        snapshots={snapshots}
-        onSave={actions.saveSnapshot}
-        onRestore={actions.restoreSnapshot}
-        onDelete={actions.deleteSnapshot}
-        onRename={actions.renameSnapshot}
+        onNewChat={() => navigate("/")}
+        histories={histories}
+        activeHistoryId={activeRouteHistoryId}
+        onOpenHistory={(historyId) => navigate(`/calc/${historyId}`)}
+        onDuplicateHistory={(historyId) => {
+          const duplicated = actions.duplicateHistory(historyId);
+          if (duplicated) {
+            navigate(`/calc/${duplicated.id}`);
+          }
+        }}
+        onRenameHistory={actions.renameHistory}
+        onDeleteHistory={(historyId) => {
+          actions.deleteHistory(historyId);
+          if (activeRouteHistoryId === historyId) {
+            navigate("/");
+          }
+        }}
+        onTogglePinHistory={actions.toggleHistoryPinned}
+        onCreateTemplateFromHistory={actions.createTemplateFromHistory}
         onResizeStart={handleResizeStart}
       />
 
       <SidebarInset className="h-screen overflow-hidden bg-[#1a1b1e] p-2 sm:p-4 relative">
-        <HomeHeader />
-        <AnimatedOutlet />
+        <HomeHeader history={history} actions={actions} />
+        <Outlet context={calculator} />
         <AddModuleBar
           ref={addModuleBarRef}
-          onAdd={actions.addRow}
+          onAdd={route === "/" ? handleAddFromHome : actions.addRow}
           className={
             route === "/"
               ? `sm:bottom-1/2 ${isWrapped ? "sm:translate-y-2/3" : "sm:translate-y-1/2"}`
