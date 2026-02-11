@@ -1,0 +1,96 @@
+function createRoundnessLevel(id, label, description, values) {
+  return {
+    id,
+    label,
+    description,
+    tokens: {
+      "--radius": values.base,
+      "--radius-sm": values.sm,
+      "--radius-md": values.md,
+      "--radius-lg": values.lg,
+      "--radius-xl": values.xl,
+      "--radius-2xl": values.x2,
+      "--radius-3xl": values.x3,
+      "--radius-4xl": values.x4,
+    },
+    previewRadius: values.lg,
+  };
+}
+
+export const ROUNDNESS_LEVELS = [
+  createRoundnessLevel(
+    "square-90",
+    "90deg Square",
+    "Perfect sharp corners everywhere.",
+    {
+      base: "0rem",
+      sm: "0rem",
+      md: "0rem",
+      lg: "0rem",
+      xl: "0rem",
+      x2: "0rem",
+      x3: "0rem",
+      x4: "0rem",
+    },
+  ),
+  createRoundnessLevel(
+    "compact",
+    "Compact",
+    "Subtle rounding.",
+    {
+      base: "0.375rem",
+      sm: "0.25rem",
+      md: "0.3125rem",
+      lg: "0.375rem",
+      xl: "0.5rem",
+      x2: "0.625rem",
+      x3: "0.75rem",
+      x4: "0.875rem",
+    },
+  ),
+  createRoundnessLevel(
+    "default",
+    "Default",
+    "Current default roundness.",
+    {
+      base: "0.625rem",
+      sm: "0.375rem",
+      md: "0.5rem",
+      lg: "0.625rem",
+      xl: "0.875rem",
+      x2: "1.125rem",
+      x3: "1.375rem",
+      x4: "1.625rem",
+    },
+  ),
+  createRoundnessLevel(
+    "soft",
+    "Soft",
+    "Noticeably rounded controls.",
+    {
+      base: "0.9rem",
+      sm: "0.625rem",
+      md: "0.75rem",
+      lg: "0.9rem",
+      xl: "1.1rem",
+      x2: "1.35rem",
+      x3: "1.6rem",
+      x4: "1.9rem",
+    },
+  ),
+  createRoundnessLevel(
+    "pill",
+    "Pill",
+    "Strong rounded personality.",
+    {
+      base: "1.2rem",
+      sm: "0.9rem",
+      md: "1.05rem",
+      lg: "1.2rem",
+      xl: "1.45rem",
+      x2: "1.7rem",
+      x3: "2rem",
+      x4: "2.35rem",
+    },
+  ),
+];
