@@ -58,6 +58,15 @@ const templates = [
       caWeight: 0.4,
     }),
   ],
+  [
+    createRow("SE", 3, { examWeight: 0.5, caWeight: 0.5 }),
+    createRow("RO", 2, { examWeight: 0.67, caWeight: 0.33 }),
+    createRow("RIP", 3, { examWeight: 0.5, caWeight: 0.5 }),
+    createRow("ABD", 2, { examWeight: 0.5, caWeight: 0.5 }),
+    createRow("IS", 2, { examWeight: 0.5, caWeight: 0.5 }),
+    createRow("COMP", 2, { examWeight: 0.67, caWeight: 0.33 }),
+    createRow("GL", 2, { examWeight: 0.67, caWeight: 0.33 }),
+  ],
 ];
 
 export const DEFAULT_ROWS = templates[0];
@@ -77,4 +86,11 @@ export const START_TEMPLATES = [
     semester: "S1",
     rows: templates[1],
   },
+  {
+    id: "computer-science-3y-s1-engineering",
+    name: "Computer Science",
+    year: "3rd Year",
+    semester: "S1",
+    rows: templates[2],
+  }
 ];
