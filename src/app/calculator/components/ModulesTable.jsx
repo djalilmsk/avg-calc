@@ -146,6 +146,7 @@ export default function ModulesTable({
                   <CalcInput
                     type="number"
                     step="1"
+                    min="0"
                     value={row.coef}
                     onChange={(event) =>
                       onUpdateRow(index, "coef", event.target.value)
@@ -157,7 +158,7 @@ export default function ModulesTable({
                 <td className="px-1">
                   <CalcInput
                     type="number"
-                    step="0.01"
+                    step="0.25"
                     min="0"
                     max="20"
                     value={row.ca}
@@ -178,7 +179,7 @@ export default function ModulesTable({
                 <td className="px-1">
                   <CalcInput
                     type="number"
-                    step="0.01"
+                    step="0.25"
                     min="0"
                     max="20"
                     value={row.exam}

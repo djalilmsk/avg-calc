@@ -98,6 +98,7 @@ export default function ModulesMobileList({
                 <CalcInput
                   type="number"
                   step="1"
+                  min="0"
                   value={row.coef}
                   onChange={(event) =>
                     onUpdateRow(index, "coef", event.target.value)
@@ -109,7 +110,7 @@ export default function ModulesMobileList({
                 <CalcLabel className="mb-1 block text-xs">Exam</CalcLabel>
                 <CalcInput
                   type="number"
-                  step="0.01"
+                  step="0.25"
                   min="0"
                   max="20"
                   value={row.exam}
@@ -125,7 +126,7 @@ export default function ModulesMobileList({
                 <CalcLabel className="mb-1 block text-xs">TD</CalcLabel>
                 <CalcInput
                   type="number"
-                  step="0.01"
+                  step="0.25"
                   min="0"
                   max="20"
                   value={row.ca}

@@ -25,7 +25,13 @@ function TemplateDetailsDialog({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+      onMouseDown={(event) => {
+        if (event.target !== event.currentTarget) return;
+        onCancel?.();
+      }}
+    >
       <form
         onSubmit={handleSubmit}
         onKeyDown={handleKeyDown}

@@ -8,7 +8,7 @@ function NavButton({ section, activeSectionId, onJumpToSection, compact = false 
       className={cn(
         "cursor-pointer",
         compact
-          ? "rounded-[var(--radius-lg)] border px-3 py-1.5 text-xs font-semibold transition-colors"
+          ? "rounded-[var(--radius-lg)] border px-3.5 py-2.5 text-sm font-semibold transition-colors"
           : "flex w-full items-center gap-3 rounded-lg px-3.5 py-3 text-left text-sm transition-colors",
         activeSectionId === section.id
           ? "border-accent bg-accent text-foreground"

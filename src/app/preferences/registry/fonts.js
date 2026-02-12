@@ -4,7 +4,7 @@ export const FONT_PRESETS = [
   createFontPreset(
     "manrope-grotesk",
     "Manrope + Space Grotesk",
-    "Current default.",
+    "Balanced modern sans pairing.",
     "\"Manrope\", \"Avenir Next\", \"Segoe UI\", sans-serif",
     "\"Space Grotesk\", \"Manrope\", sans-serif",
   ),
@@ -81,7 +81,7 @@ export const FONT_PRESETS = [
   createFontPreset(
     "nunito-soft",
     "Nunito Soft",
-    "Warm rounded sans for approachable UI.",
+    "Current default. Warm rounded sans for approachable UI.",
     "\"Nunito\", \"Inter\", sans-serif",
     "\"Nunito\", \"Inter\", sans-serif",
   ),

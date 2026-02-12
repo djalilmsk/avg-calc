@@ -19,6 +19,29 @@ function roundTo2(value) {
   return Math.round(value * 100) / 100;
 }
 
+function normalizeCoefInput(rawValue, previousValue = "") {
+  const previousText = String(previousValue ?? "");
+  const nextText = String(rawValue ?? "").trim().replace(",", ".");
+  if (nextText === "") return "";
+  if (!/^\d*\.?\d*$/.test(nextText)) return previousText;
+
+  if (nextText === ".") return "0.";
+  if (nextText.endsWith(".")) {
+    const wholePart = nextText.slice(0, -1);
+    if (wholePart === "") return "0.";
+    const wholeNumber = Number(wholePart);
+    if (!Number.isFinite(wholeNumber)) return previousText;
+    return `${Math.max(0, wholeNumber)}.`;
+  }
+
+  const numeric = Number(nextText);
+  if (!Number.isFinite(numeric)) return previousText;
+  const clamped = Math.max(0, numeric);
+  return Number.isInteger(clamped)
+    ? String(clamped)
+    : String(roundTo2(clamped)).replace(/\.?0+$/, "");
+}
+
 const AddModuleBar = forwardRef(function AddModuleBar(
   { onAdd, className = "" },
   ref,
@@ -110,7 +133,7 @@ const AddModuleBar = forwardRef(function AddModuleBar(
 
     onAdd({
       name: trimmed,
-      coef,
+      coef: Math.max(0, clampToRange(coef, 0, Number.POSITIVE_INFINITY, 1)),
       examWeight: nextExamWeight,
       caWeight: nextCaWeight,
       includeExam,
@@ -129,6 +152,7 @@ const AddModuleBar = forwardRef(function AddModuleBar(
     return (
       <SoftIconButton
         onClick={() => setIsMobileComposerOpen(true)}
+        data-add-module-open="true"
         className="fixed right-5 bottom-[max(1rem,env(safe-area-inset-bottom))] z-40 flex size-12 items-center justify-center rounded-full bg-sidebar/95 text-xl font-semibold backdrop-blur"
         aria-label="Open add module bar"
         title="Add module"
@@ -152,6 +176,7 @@ const AddModuleBar = forwardRef(function AddModuleBar(
           {isMobile ? (
             <div className="flex w-full flex-col gap-2">
               <CalcInputAdd
+                data-add-module-input="true"
                 value={name}
                 onChange={(event) => setName(event.target.value)}
                 onKeyDown={handleNameInputKeyDown}
@@ -161,13 +186,30 @@ const AddModuleBar = forwardRef(function AddModuleBar(
               <CalcInput
                 type="number"
                 step="1"
+                min="0"
                 value={coef}
-                onChange={(event) => setCoef(event.target.value)}
+                onChange={(event) =>
+                  setCoef((previous) =>
+                    normalizeCoefInput(event.target.value, previous),
+                  )
+                }
                 onKeyDown={handleComposerInputKeyDown}
                 placeholder="Coef"
                 className="w-full"
               />
               <div className="grid grid-cols-2 gap-2">
+                <CalcInput
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  max="1"
+                  value={caWeight}
+                  onChange={(event) => handleTdWeightChange(event.target.value)}
+                  onKeyDown={handleComposerInputKeyDown}
+                  placeholder="Per TD"
+                  disabled={lockWeights}
+                  className="w-full"
+                />
                 <CalcInput
                   type="number"
                   step="0.01"
@@ -179,18 +221,6 @@ const AddModuleBar = forwardRef(function AddModuleBar(
                   }
                   onKeyDown={handleComposerInputKeyDown}
                   placeholder="Per Ex"
-                  disabled={lockWeights}
-                  className="w-full"
-                />
-                <CalcInput
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  max="1"
-                  value={caWeight}
-                  onChange={(event) => handleTdWeightChange(event.target.value)}
-                  onKeyDown={handleComposerInputKeyDown}
-                  placeholder="Per TD"
                   disabled={lockWeights}
                   className="w-full"
                 />
@@ -240,6 +270,7 @@ const AddModuleBar = forwardRef(function AddModuleBar(
           ) : (
             <div className="flex w-full flex-wrap items-center gap-2">
               <CalcInputAdd
+                data-add-module-input="true"
                 value={name}
                 onChange={(event) => setName(event.target.value)}
                 onKeyDown={handleNameInputKeyDown}
@@ -249,22 +280,15 @@ const AddModuleBar = forwardRef(function AddModuleBar(
               <CalcInput
                 type="number"
                 step="1"
+                min="0"
                 value={coef}
-                onChange={(event) => setCoef(event.target.value)}
+                onChange={(event) =>
+                  setCoef((previous) =>
+                    normalizeCoefInput(event.target.value, previous),
+                  )
+                }
                 onKeyDown={handleComposerInputKeyDown}
                 placeholder="Coef"
-                className="min-w-0 flex-[1_1_84px]"
-              />
-              <CalcInput
-                type="number"
-                step="0.01"
-                min="0"
-                max="1"
-                value={examWeight}
-                onChange={(event) => handleExamWeightChange(event.target.value)}
-                onKeyDown={handleComposerInputKeyDown}
-                placeholder="Ex W"
-                disabled={lockWeights}
                 className="min-w-0 flex-[1_1_84px]"
               />
               <CalcInput
@@ -276,6 +300,18 @@ const AddModuleBar = forwardRef(function AddModuleBar(
                 onChange={(event) => handleTdWeightChange(event.target.value)}
                 onKeyDown={handleComposerInputKeyDown}
                 placeholder="TD W"
+                disabled={lockWeights}
+                className="min-w-0 flex-[1_1_84px]"
+              />
+              <CalcInput
+                type="number"
+                step="0.01"
+                min="0"
+                max="1"
+                value={examWeight}
+                onChange={(event) => handleExamWeightChange(event.target.value)}
+                onKeyDown={handleComposerInputKeyDown}
+                placeholder="Ex W"
                 disabled={lockWeights}
                 className="min-w-0 flex-[1_1_84px]"
               />
