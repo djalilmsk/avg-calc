@@ -10,6 +10,10 @@ function getPageMeta(pathname) {
     return { title: "CookedCalc | Calculator", page: "calculator" };
   }
 
+  if (pathname === "/docs") {
+    return { title: "CookedCalc | Docs", page: "docs" };
+  }
+
   return { title: "CookedCalc", page: "default" };
 }
 
