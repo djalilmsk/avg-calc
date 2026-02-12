@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet-async";
+import { useEffect, useMemo } from "react";
 import { useLocation } from "react-router";
 
 const SITE_NAME = "CookedCalc";
@@ -21,6 +21,50 @@ function toAbsoluteUrl(value) {
   return `${SITE_URL}${normalizedValue}`;
 }
 
+function upsertMeta(selector, attributes, content) {
+  let element = document.head.querySelector(selector);
+  if (!(element instanceof HTMLMetaElement)) {
+    element = document.createElement("meta");
+    Object.entries(attributes).forEach(([key, value]) => {
+      element.setAttribute(key, value);
+    });
+    document.head.appendChild(element);
+  }
+  element.setAttribute("content", content);
+}
+
+function upsertCanonical(href) {
+  let element = document.head.querySelector('link[rel="canonical"]');
+  if (!(element instanceof HTMLLinkElement)) {
+    element = document.createElement("link");
+    element.setAttribute("rel", "canonical");
+    document.head.appendChild(element);
+  }
+  element.setAttribute("href", href);
+}
+
+function removeMetaByName(name) {
+  const element = document.head.querySelector(`meta[name="${name}"]`);
+  if (element) element.remove();
+}
+
+function clearStructuredDataScripts() {
+  const scripts = document.head.querySelectorAll(
+    'script[data-seo-structured="true"]',
+  );
+  scripts.forEach((script) => script.remove());
+}
+
+function appendStructuredDataScripts(entries) {
+  entries.forEach((entry) => {
+    const script = document.createElement("script");
+    script.setAttribute("type", "application/ld+json");
+    script.setAttribute("data-seo-structured", "true");
+    script.text = JSON.stringify(entry);
+    document.head.appendChild(script);
+  });
+}
+
 function SeoHead({
   title,
   description,
@@ -36,68 +80,141 @@ function SeoHead({
   const canonicalUrl = buildCanonicalUrl(pathname);
   const previewImageUrl = toAbsoluteUrl(image);
   const robotsContent = noIndex ? "noindex, nofollow" : "index, follow";
-  const mergedStructuredData = [
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "@id": `${SITE_URL}/#organization`,
-      name: SITE_NAME,
-      url: SITE_URL,
-      logo: LOGO_URL,
-      image: PREVIEW_IMAGE_URL,
-      founder: {
-        "@type": "Person",
-        name: AUTHOR_NAME,
-        url: AUTHOR_URL,
+  const mergedStructuredData = useMemo(
+    () => [
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "@id": `${SITE_URL}/#organization`,
+        name: SITE_NAME,
+        url: SITE_URL,
+        logo: LOGO_URL,
+        image: PREVIEW_IMAGE_URL,
+        founder: {
+          "@type": "Person",
+          name: AUTHOR_NAME,
+          url: AUTHOR_URL,
+        },
       },
-    },
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "@id": `${SITE_URL}/#website`,
-      name: SITE_NAME,
-      url: SITE_URL,
-      publisher: { "@id": `${SITE_URL}/#organization` },
-      inLanguage: "en",
-    },
-    ...structuredData.filter(Boolean),
-  ];
-
-  return (
-    <Helmet prioritizeSeoTags>
-      <title>{title}</title>
-      <meta name="description" content={description} />
-      {keywords ? <meta name="keywords" content={keywords} /> : null}
-      <meta name="robots" content={robotsContent} />
-      <meta name="author" content={`${AUTHOR_NAME} (${AUTHOR_URL})`} />
-      <meta name="publisher" content={`${AUTHOR_NAME} (${AUTHOR_URL})`} />
-      <link rel="canonical" href={canonicalUrl} />
-
-      <meta property="og:site_name" content={SITE_NAME} />
-      <meta property="og:type" content={ogType} />
-      <meta property="og:title" content={title} />
-      <meta property="og:description" content={description} />
-      <meta property="og:url" content={canonicalUrl} />
-      <meta property="og:image" content={previewImageUrl} />
-      <meta property="og:image:secure_url" content={previewImageUrl} />
-      <meta property="og:image:alt" content={imageAlt} />
-      <meta property="og:image:width" content="1200" />
-      <meta property="og:image:height" content="630" />
-      <meta property="og:locale" content="en_US" />
-
-      <meta name="twitter:card" content={twitterCard} />
-      <meta name="twitter:title" content={title} />
-      <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={previewImageUrl} />
-      <meta name="twitter:image:alt" content={imageAlt} />
-
-      {mergedStructuredData.map((entry, index) => (
-        <script key={index} type="application/ld+json">
-          {JSON.stringify(entry)}
-        </script>
-      ))}
-    </Helmet>
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "@id": `${SITE_URL}/#website`,
+        name: SITE_NAME,
+        url: SITE_URL,
+        publisher: { "@id": `${SITE_URL}/#organization` },
+        inLanguage: "en",
+      },
+      ...structuredData.filter(Boolean),
+    ],
+    [structuredData],
   );
+
+  useEffect(() => {
+    document.title = title;
+
+    upsertMeta('meta[name="description"]', { name: "description" }, description);
+    if (keywords) {
+      upsertMeta('meta[name="keywords"]', { name: "keywords" }, keywords);
+    } else {
+      removeMetaByName("keywords");
+    }
+
+    upsertMeta('meta[name="robots"]', { name: "robots" }, robotsContent);
+    upsertMeta(
+      'meta[name="author"]',
+      { name: "author" },
+      `${AUTHOR_NAME} (${AUTHOR_URL})`,
+    );
+    upsertMeta(
+      'meta[name="publisher"]',
+      { name: "publisher" },
+      `${AUTHOR_NAME} (${AUTHOR_URL})`,
+    );
+    upsertCanonical(canonicalUrl);
+
+    upsertMeta(
+      'meta[property="og:site_name"]',
+      { property: "og:site_name" },
+      SITE_NAME,
+    );
+    upsertMeta('meta[property="og:type"]', { property: "og:type" }, ogType);
+    upsertMeta('meta[property="og:title"]', { property: "og:title" }, title);
+    upsertMeta(
+      'meta[property="og:description"]',
+      { property: "og:description" },
+      description,
+    );
+    upsertMeta('meta[property="og:url"]', { property: "og:url" }, canonicalUrl);
+    upsertMeta(
+      'meta[property="og:image"]',
+      { property: "og:image" },
+      previewImageUrl,
+    );
+    upsertMeta(
+      'meta[property="og:image:secure_url"]',
+      { property: "og:image:secure_url" },
+      previewImageUrl,
+    );
+    upsertMeta(
+      'meta[property="og:image:alt"]',
+      { property: "og:image:alt" },
+      imageAlt,
+    );
+    upsertMeta(
+      'meta[property="og:image:width"]',
+      { property: "og:image:width" },
+      "1200",
+    );
+    upsertMeta(
+      'meta[property="og:image:height"]',
+      { property: "og:image:height" },
+      "630",
+    );
+    upsertMeta('meta[property="og:locale"]', { property: "og:locale" }, "en_US");
+
+    upsertMeta(
+      'meta[name="twitter:card"]',
+      { name: "twitter:card" },
+      twitterCard,
+    );
+    upsertMeta(
+      'meta[name="twitter:title"]',
+      { name: "twitter:title" },
+      title,
+    );
+    upsertMeta(
+      'meta[name="twitter:description"]',
+      { name: "twitter:description" },
+      description,
+    );
+    upsertMeta(
+      'meta[name="twitter:image"]',
+      { name: "twitter:image" },
+      previewImageUrl,
+    );
+    upsertMeta(
+      'meta[name="twitter:image:alt"]',
+      { name: "twitter:image:alt" },
+      imageAlt,
+    );
+
+    clearStructuredDataScripts();
+    appendStructuredDataScripts(mergedStructuredData);
+  }, [
+    canonicalUrl,
+    description,
+    imageAlt,
+    keywords,
+    mergedStructuredData,
+    ogType,
+    previewImageUrl,
+    robotsContent,
+    title,
+    twitterCard,
+  ]);
+
+  return null;
 }
 
 export default SeoHead;

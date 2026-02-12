@@ -90,7 +90,7 @@ You can:
 - Vite 7
 - Tailwind CSS 4
 - Radix UI + custom shadcn-style primitives
-- `react-helmet-async` for route-level SEO tags
+- Route-level SEO metadata management via a reusable `SeoHead` component
 
 ## Getting Started
 
