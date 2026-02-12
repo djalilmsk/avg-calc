@@ -4,13 +4,8 @@ import HistoryControls from "@/app/calculator/components/HistoryControls";
 import { Link } from "react-router";
 import { SoftIconButton } from "../ui/calc-ui";
 
-function HomeHeader({ history, actions, route = "/" }) {
-  const isDocsRoute = route === "/docs";
-  const docsLinkClassName = `rounded-md border px-2.5 py-1 text-xs font-semibold transition-colors ${
-    isDocsRoute
-      ? "border-accent bg-accent text-foreground"
-      : "border-border bg-secondary/70 text-muted-foreground hover:bg-accent hover:text-foreground"
-  }`;
+function HomeHeader({ history, actions }) {
+  const docsLinkClassName = `rounded-md border px-2.5 py-1 text-xs font-semibold transition-colors border-border bg-secondary/70 text-muted-foreground hover:bg-accent hover:text-foreground`;
 
   return (
     <>
@@ -32,7 +27,10 @@ function HomeHeader({ history, actions, route = "/" }) {
         <div className="flex items-center justify-between gap-2 pb-2 py-2">
           <div className="flex gap-2">
             <SidebarToggleButton />
-            <SoftIconButton asChild className="flex h-11 items-center gap-2 rounded-lg px-2 sm:h-9">
+            <SoftIconButton
+              asChild
+              className="flex h-11 items-center gap-2 rounded-lg px-2 sm:h-9"
+            >
               <a
                 href="https://github.com/djalilmsk/avg-calc"
                 target="_blank"

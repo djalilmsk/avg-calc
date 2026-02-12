@@ -15,7 +15,8 @@ function Layout() {
   const isCalculatorRoute = route.startsWith("/calc/");
   const shouldShowAddModuleBar = isHomeRoute || isCalculatorRoute;
   const calculator = useSemesterCalculator();
-  const { actions, history, histories, selectedHistoryId, templates } = calculator;
+  const { actions, history, histories, selectedHistoryId, templates } =
+    calculator;
   const { discardSelectedTemplateHistoryIfEmpty } = actions;
 
   const [sidebarWidth, setSidebarWidth] = useState(() => {
@@ -26,6 +27,7 @@ function Layout() {
   const [isResizingSidebar, setIsResizingSidebar] = useState(false);
   const isResizingRef = useRef(false);
   const [isWrapped, setIsWrapped] = useState(false);
+  const [templateDialogHistoryId, setTemplateDialogHistoryId] = useState(null);
   const resizeObserverRef = useRef(null);
 
   const addModuleBarRef = useCallback((node) => {
@@ -81,6 +83,109 @@ function Layout() {
 
   useEffect(() => {
     function handleHistoryShortcut(event) {
+      if (
+        shouldShowAddModuleBar &&
+        event.ctrlKey &&
+        !event.shiftKey &&
+        !event.altKey &&
+        !event.metaKey &&
+        event.key.toLowerCase() === "m"
+      ) {
+        event.preventDefault();
+
+        const focusAddModuleInput = () => {
+          const moduleInput = document.querySelector(
+            '[data-add-module-input="true"]',
+          );
+          if (!(moduleInput instanceof HTMLInputElement)) return false;
+          moduleInput.focus();
+          moduleInput.select();
+          return true;
+        };
+
+        if (focusAddModuleInput()) return;
+
+        const openComposerButton = document.querySelector(
+          '[data-add-module-open="true"]',
+        );
+        if (openComposerButton instanceof HTMLButtonElement) {
+          openComposerButton.click();
+          window.setTimeout(() => {
+            focusAddModuleInput();
+          }, 0);
+        }
+        return;
+      }
+
+      if (isCalculatorRoute && activeRouteHistoryId) {
+        if (
+          event.ctrlKey &&
+          event.shiftKey &&
+          !event.altKey &&
+          !event.metaKey
+        ) {
+          const lowerKey = event.key.toLowerCase();
+
+          if (lowerKey === "h") {
+            event.preventDefault();
+            setTemplateDialogHistoryId(activeRouteHistoryId);
+            return;
+          }
+
+          if (lowerKey === "d") {
+            event.preventDefault();
+            const duplicated = actions.duplicateHistory(activeRouteHistoryId);
+            if (duplicated) {
+              navigate(`/calc/${duplicated.id}`);
+            }
+            return;
+          }
+
+          if (event.key === "Backspace") {
+            event.preventDefault();
+            actions.deleteHistory(activeRouteHistoryId);
+            navigate("/");
+            return;
+          }
+        }
+
+        if (
+          event.altKey &&
+          event.shiftKey &&
+          !event.ctrlKey &&
+          !event.metaKey &&
+          event.key.toLowerCase() === "p"
+        ) {
+          event.preventDefault();
+          actions.toggleHistoryPinned(activeRouteHistoryId);
+          return;
+        }
+
+        if (
+          event.ctrlKey &&
+          !event.shiftKey &&
+          !event.altKey &&
+          !event.metaKey &&
+          event.key === "ArrowLeft"
+        ) {
+          event.preventDefault();
+          actions.undo();
+          return;
+        }
+
+        if (
+          event.ctrlKey &&
+          !event.shiftKey &&
+          !event.altKey &&
+          !event.metaKey &&
+          event.key === "ArrowRight"
+        ) {
+          event.preventDefault();
+          actions.redo();
+          return;
+        }
+      }
+
       if (event.key !== "Enter" || !event.altKey) return;
       if (event.ctrlKey || event.metaKey) return;
 
@@ -94,7 +199,8 @@ function Layout() {
 
       const fallbackIndex = direction > 0 ? 0 : totalHistories - 1;
       const baseIndex = currentIndex >= 0 ? currentIndex : fallbackIndex;
-      const nextIndex = (baseIndex + direction + totalHistories) % totalHistories;
+      const nextIndex =
+        (baseIndex + direction + totalHistories) % totalHistories;
       const nextHistoryId = histories[nextIndex]?.id;
       if (!nextHistoryId) return;
 
@@ -104,7 +210,14 @@ function Layout() {
 
     window.addEventListener("keydown", handleHistoryShortcut);
     return () => window.removeEventListener("keydown", handleHistoryShortcut);
-  }, [activeRouteHistoryId, histories, navigate]);
+  }, [
+    actions,
+    activeRouteHistoryId,
+    histories,
+    isCalculatorRoute,
+    navigate,
+    shouldShowAddModuleBar,
+  ]);
 
   return (
     <SidebarProvider
@@ -145,14 +258,17 @@ function Layout() {
           }
           return createdTemplate;
         }}
+        openTemplateDialogHistoryId={templateDialogHistoryId}
+        onOpenTemplateDialogHandled={() => setTemplateDialogHistoryId(null)}
         templateCount={templates.length}
         onResizeStart={handleResizeStart}
       />
 
       <SidebarInset
-        className={`relative h-screen overflow-hidden bg-background p-2 sm:p-4`}
+        className={`relative h-screen overflow-hidden bg-background p-2 sm:p-4
+          `}
       >
-        <HomeHeader history={history} actions={actions} route={route} />
+        <HomeHeader history={history} actions={actions} />
         <Outlet context={calculator} />
         {shouldShowAddModuleBar ? (
           <AddModuleBar
