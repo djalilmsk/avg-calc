@@ -1,12 +1,17 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "routes": [
+  "redirects": [
     {
-      "handle": "filesystem"
-    },
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "calc.djalilmsk.dev" }],
+      "destination": "https://cookedcalc.djalilmsk.dev/:path*",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
     {
-      "src": "/.*",
-      "dest": "/index.html"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
