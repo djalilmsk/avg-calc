@@ -1,18 +1,19 @@
 import { PanelLeft } from "lucide-react";
 import { useSidebar } from "./sidebar";
+import { SoftIconButton } from "./calc-ui";
 
 function SidebarToggleButton() {
   const { toggleSidebar } = useSidebar();
 
   return (
-    <button
+    <SoftIconButton
       onClick={toggleSidebar}
-      className="flex sm:h-9 sm:w-9 h-11 w-11 items-center justify-center rounded-lg cursor-pointer bg-[#262626] text-zinc-200 hover:bg-[#2f2f2f]"
+      className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-lg sm:h-9 sm:w-9"
       title="Toggle sidebar"
       aria-label="Toggle sidebar"
     >
       <PanelLeft className="sm:h-4 sm:w-4 h-5.5 w-5.5" />
-    </button>
+    </SoftIconButton>
   );
 }
 
