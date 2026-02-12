@@ -1,6 +1,8 @@
+# Pointless? Maybe. Well made? Absolutely
+
 [![Portfolio Preview](https://www.djalilmsk.dev/preview.jpg)](https://www.djalilmsk.dev/links)
 
-# CookedCalc
+## CookedCalc
 
 CookedCalc a semester average calculator.
 
