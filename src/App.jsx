@@ -18,8 +18,8 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
             <Route path="/calc/:template-id" element={<SemesterAverageApp />} />
-            <Route path="/docs" element={<DocsPage />} />
           </Route>
+          <Route path="/docs" element={<DocsPage />} />
         </Routes>
         <Analytics />
         <SpeedInsights />

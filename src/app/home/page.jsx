@@ -5,6 +5,7 @@ import TemplateDetailsDialog from "@/components/ui/template-details-dialog";
 import DesktopTemplatesView from "./components/DesktopTemplatesView";
 import MobileTemplatesView from "./components/MobileTemplatesView";
 import TemplatesOverflowDialog from "./components/TemplatesOverflowDialog";
+import SeoHead from "@/components/seo/SeoHead";
 
 const MOBILE_TEMPLATE_LIMIT = 4;
 
@@ -87,6 +88,44 @@ function Home() {
 
   return (
     <>
+      <SeoHead
+        title="CookedCalc | Semester Average Calculator for Students"
+        description="A semester-grade workspace that lets you manage multiple scenarios, save and reuse templates, and keep everything stored locally."
+        keywords="semester calculator, grade history, templates, weighted average, cookedcalc home"
+        structuredData={[
+          {
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            name: "CookedCalc",
+            applicationCategory: "EducationalApplication",
+            operatingSystem: "Any",
+            url: "https://cookedcalc.djalilmsk.dev/",
+            description:
+              "A semester-grade workspace that lets you manage multiple scenarios, save and reuse templates, and keep everything stored locally.",
+            image: "https://cookedcalc.djalilmsk.dev/preview.jpg",
+            author: {
+              "@type": "Person",
+              name: "Abd eldjallil Meskali (djalilmsk)",
+              url: "https://djalilmsk.dev",
+            },
+            publisher: {
+              "@type": "Person",
+              name: "Abd eldjallil Meskali (djalilmsk)",
+              url: "https://djalilmsk.dev",
+            },
+            offers: {
+              "@type": "Offer",
+              price: "0",
+              priceCurrency: "USD",
+            },
+            audience: {
+              "@type": "Audience",
+              audienceType: "Students and universities",
+            },
+          },
+        ]}
+      />
+
       {!isMobile ? (
         <DesktopTemplatesView
           templates={desktopTemplates}

@@ -21,26 +21,26 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["icon.jfif", "robots.txt", "sitemap.xml"],
+      includeAssets: ["logo.svg", "logo.jpg", "robots.txt", "sitemap.xml"],
       manifest: {
-        name: "Semester Average Calculator",
-        short_name: "Semester Avg",
+        name: "Semester Average Workspace",
+        short_name: "CookedCalc",
         description:
-          "Calculate your weighted semester average easily. Input module grades, coefficients, and weights to track your academic performance.",
-        theme_color: "#000000",
-        background_color: "#000000",
+          "A semester-grade workspace that lets you manage multiple scenarios, save and reuse templates, and keep everything stored locally.",
+        theme_color: "#0E0E0E",
+        background_color: "#0E0E0E",
         display: "standalone",
         orientation: "portrait",
         scope: "/",
         start_url: "/",
         icons: [
           {
-            src: "icon.jfif",
+            src: "logo-192x192.jpg",
             sizes: "192x192",
             type: "image/jpeg",
           },
           {
-            src: "icon.jfif",
+            src: "logo-512x512.jpg",
             sizes: "512x512",
             type: "image/jpeg",
           },
