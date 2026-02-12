@@ -21,7 +21,7 @@ function normalizeRow(row, options = {}) {
 
   return {
     name: String(row?.name ?? "New module").trim() || "New module",
-    coef: normalizeNumber(row?.coef, 1),
+    coef: Math.max(0, normalizeNumber(row?.coef, 1)),
     exam: clearScores ? "" : row?.exam ?? "",
     ca: clearScores ? "" : row?.ca ?? "",
     examWeight: normalizeNumber(row?.examWeight, DEFAULT_EXAM_WEIGHT),

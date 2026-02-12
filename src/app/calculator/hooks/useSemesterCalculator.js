@@ -6,6 +6,9 @@ import { useCalculatorStorageApi } from "../context/useCalculatorStorageApi";
 
 const HISTORY_DEBOUNCE_MS = 160;
 const PERSIST_DEBOUNCE_MS = 180;
+const GRADE_MIN = 0;
+const GRADE_MAX = 20;
+const GRADE_STEP = 0.25;
 
 function clampRange(value, min, max) {
   return Math.min(max, Math.max(min, clampNumber(value)));
@@ -13,6 +16,60 @@ function clampRange(value, min, max) {
 
 function round2Value(value) {
   return Math.round(value * 100) / 100;
+}
+
+function roundToGradeStep(value) {
+  return round2Value(Math.round(value / GRADE_STEP) * GRADE_STEP);
+}
+
+function formatGradeValue(value) {
+  if (!Number.isFinite(value)) return "";
+  if (Number.isInteger(value)) return String(value);
+  return String(round2Value(value)).replace(/\.?0+$/, "");
+}
+
+function normalizeCoefInput(rawValue, previousValue = "") {
+  const previousText = String(previousValue ?? "");
+  const nextText = String(rawValue ?? "").trim().replace(",", ".");
+  if (nextText === "") return "";
+  if (!/^\d*\.?\d*$/.test(nextText)) return previousText;
+
+  if (nextText === ".") return "0.";
+  if (nextText.endsWith(".")) {
+    const wholePart = nextText.slice(0, -1);
+    if (wholePart === "") return "0.";
+    const wholeNumber = Number(wholePart);
+    if (!Number.isFinite(wholeNumber)) return previousText;
+    return `${formatGradeValue(Math.max(0, wholeNumber))}.`;
+  }
+
+  const numeric = Number(nextText);
+  if (!Number.isFinite(numeric)) return previousText;
+  return formatGradeValue(Math.max(0, numeric));
+}
+
+function normalizeGradeInput(rawValue, previousValue = "") {
+  const previousText = String(previousValue ?? "");
+  const nextText = String(rawValue ?? "").trim().replace(",", ".");
+  if (nextText === "") return "";
+  if (!/^\d*\.?\d*$/.test(nextText)) return previousText;
+
+  if (nextText === ".") return "0.";
+  if (nextText.endsWith(".")) {
+    const wholePart = nextText.slice(0, -1);
+    if (wholePart === "") return "0.";
+    const wholeNumber = Number(wholePart);
+    if (!Number.isFinite(wholeNumber)) return previousText;
+    const clampedWhole = Math.min(GRADE_MAX, Math.max(GRADE_MIN, wholeNumber));
+    return `${formatGradeValue(clampedWhole)}.`;
+  }
+
+  const numeric = Number(nextText);
+  if (!Number.isFinite(numeric)) return previousText;
+
+  const clamped = Math.min(GRADE_MAX, Math.max(GRADE_MIN, numeric));
+  const stepped = roundToGradeStep(clamped);
+  return formatGradeValue(stepped);
 }
 
 function sanitizeSegment(value) {
@@ -54,7 +111,7 @@ function findHistoryById(historyId, histories) {
 function createRowFromPayload(payload, options = {}) {
   const { clearScores = false } = options;
   const name = String(payload?.name ?? "New module").trim() || "New module";
-  const coef = payload?.coef ?? 1;
+  const coef = Math.max(0, clampNumber(payload?.coef ?? 1));
   const baseRow = {
     name,
     coef,
@@ -838,12 +895,20 @@ export function useSemesterCalculator() {
     setPresent((state) => {
       const currentRow = state.rows[index];
       if (!currentRow) return state;
-      if (Object.is(currentRow[key], value)) {
+
+      const nextValue =
+        key === "exam" || key === "ca"
+          ? normalizeGradeInput(value, currentRow[key])
+          : key === "coef"
+            ? normalizeCoefInput(value, currentRow[key])
+          : value;
+
+      if (Object.is(currentRow[key], nextValue)) {
         return state;
       }
 
       const nextRows = state.rows.slice();
-      const nextRow = normalizeRowHiddenStats({ ...currentRow, [key]: value });
+      const nextRow = normalizeRowHiddenStats({ ...currentRow, [key]: nextValue });
       if (isSameRow(currentRow, nextRow)) return state;
       nextRows[index] = nextRow;
       const nextState = { ...state, rows: nextRows };
