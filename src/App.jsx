@@ -6,6 +6,7 @@ import { SpeedInsights } from "@vercel/speed-insights/react";
 
 import Home from "./app/home/page";
 import SemesterAverageApp from "./app/calculator/page";
+import DocsPage from "./app/docs/page";
 import PageManager from "./components/layouts/PageManager";
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
             <Route path="/calc/:template-id" element={<SemesterAverageApp />} />
+            <Route path="/docs" element={<DocsPage />} />
           </Route>
         </Routes>
         <Analytics />

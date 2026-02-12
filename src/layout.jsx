@@ -11,6 +11,9 @@ function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
   const route = location.pathname;
+  const isHomeRoute = route === "/";
+  const isCalculatorRoute = route.startsWith("/calc/");
+  const shouldShowAddModuleBar = isHomeRoute || isCalculatorRoute;
   const calculator = useSemesterCalculator();
   const { actions, history, histories, selectedHistoryId, templates } = calculator;
   const { discardSelectedTemplateHistoryIfEmpty } = actions;
@@ -52,9 +55,9 @@ function Layout() {
   }, [sidebarWidth]);
 
   useEffect(() => {
-    if (route !== "/") return;
+    if (!isHomeRoute) return;
     discardSelectedTemplateHistoryIfEmpty?.();
-  }, [discardSelectedTemplateHistoryIfEmpty, route]);
+  }, [discardSelectedTemplateHistoryIfEmpty, isHomeRoute]);
 
   const handleResizeStart = (event) =>
     startSidebarResize(
@@ -70,9 +73,11 @@ function Layout() {
     navigate(`/calc/${historyItem.id}`);
   };
 
-  const activeRouteHistoryId = route.startsWith("/calc/")
+  const activeRouteHistoryId = isCalculatorRoute
     ? route.slice("/calc/".length)
-    : selectedHistoryId;
+    : isHomeRoute
+      ? selectedHistoryId
+      : null;
 
   useEffect(() => {
     function handleHistoryShortcut(event) {
@@ -112,6 +117,7 @@ function Layout() {
           discardSelectedTemplateHistoryIfEmpty?.();
           navigate("/");
         }}
+        onOpenDocs={() => navigate("/docs")}
         histories={histories}
         activeHistoryId={activeRouteHistoryId}
         onOpenHistory={(historyId) => navigate(`/calc/${historyId}`)}
@@ -129,23 +135,36 @@ function Layout() {
           }
         }}
         onTogglePinHistory={actions.toggleHistoryPinned}
-        onCreateTemplateFromHistory={actions.createTemplateFromHistory}
+        onCreateTemplateFromHistory={(historyId, templateDetails) => {
+          const createdTemplate = actions.createTemplateFromHistory(
+            historyId,
+            templateDetails,
+          );
+          if (createdTemplate) {
+            navigate("/");
+          }
+          return createdTemplate;
+        }}
         templateCount={templates.length}
         onResizeStart={handleResizeStart}
       />
 
-      <SidebarInset className="relative h-screen overflow-hidden bg-background p-2 sm:p-4">
-        <HomeHeader history={history} actions={actions} />
+      <SidebarInset
+        className={`relative h-screen overflow-hidden bg-background p-2 sm:p-4`}
+      >
+        <HomeHeader history={history} actions={actions} route={route} />
         <Outlet context={calculator} />
-        <AddModuleBar
-          ref={addModuleBarRef}
-          onAdd={route === "/" ? handleAddFromHome : actions.addRow}
-          className={
-            route === "/"
-              ? `sm:bottom-1/2 ${isWrapped ? "sm:translate-y-2/3" : "sm:translate-y-1/2"}`
-              : "translate-y-0"
-          }
-        />
+        {shouldShowAddModuleBar ? (
+          <AddModuleBar
+            ref={addModuleBarRef}
+            onAdd={isHomeRoute ? handleAddFromHome : actions.addRow}
+            className={
+              isHomeRoute
+                ? `sm:bottom-1/2 ${isWrapped ? "sm:translate-y-2/3" : "sm:translate-y-1/2"}`
+                : "translate-y-0"
+            }
+          />
+        ) : null}
       </SidebarInset>
     </SidebarProvider>
   );

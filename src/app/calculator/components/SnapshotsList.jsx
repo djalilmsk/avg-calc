@@ -6,9 +6,9 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
-  SidebarRail
+  SidebarRail,
 } from "@/components/ui/sidebar";
-import { Copy, Pin, Plus, X } from "lucide-react";
+import { BookOpen, Copy, Edit, Pin, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CalcInput, SoftIconButton } from "@/components/ui/calc-ui";
 import TemplateDetailsDialog from "@/components/ui/template-details-dialog";
@@ -24,8 +24,9 @@ export default function SnapshotsList({
   onDeleteHistory,
   onTogglePinHistory,
   onCreateTemplateFromHistory,
+  onOpenDocs,
   templateCount = 0,
-  onResizeStart
+  onResizeStart,
 }) {
   const [editingHistoryId, setEditingHistoryId] = useState(null);
   const [editingName, setEditingName] = useState("");
@@ -74,7 +75,7 @@ export default function SnapshotsList({
       historyId: historyItem.id,
       name: historyItem.name,
       year: "Custom",
-      semester: "--"
+      semester: "--",
     });
   }
 
@@ -87,11 +88,14 @@ export default function SnapshotsList({
       return;
     }
 
-    const createdTemplate = onCreateTemplateFromHistory?.(templateDraft.historyId, {
-      name: templateDraft.name,
-      year: templateDraft.year,
-      semester: templateDraft.semester
-    });
+    const createdTemplate = onCreateTemplateFromHistory?.(
+      templateDraft.historyId,
+      {
+        name: templateDraft.name,
+        year: templateDraft.year,
+        semester: templateDraft.semester,
+      },
+    );
     if (!createdTemplate) {
       setTemplateDraftError("Unable to create template from this history.");
       return;
@@ -105,7 +109,7 @@ export default function SnapshotsList({
       if (!currentDraft) return currentDraft;
       return {
         ...currentDraft,
-        [key]: value
+        [key]: value,
       };
     });
   }
@@ -120,15 +124,29 @@ export default function SnapshotsList({
       >
         <SidebarHeader className="border-b border-sidebar-border bg-sidebar p-2.5">
           <div className="mb-2 flex items-center justify-between gap-2 px-1 pt-2">
-            <h2 className="text-sm font-semibold text-sidebar-foreground">Histories</h2>
-            <SoftIconButton
-              onClick={onNewChat}
-              className="flex h-11 w-11 items-center justify-center rounded-md sm:h-8 sm:w-8"
-              title="Go home"
-              aria-label="Go home"
-            >
-              <Plus className="sm:h-4 sm:w-4 h-5.5 w-5.5" />
-            </SoftIconButton>
+            <h2 className="text-sm font-semibold text-sidebar-foreground">
+              Histories
+            </h2>
+            <div className="flex items-center gap-1.5">
+              {onOpenDocs ? (
+                <SoftIconButton
+                  onClick={onOpenDocs}
+                  className="flex h-11 w-11 items-center justify-center rounded-md sm:h-8 sm:w-8 cursor-pointer"
+                  title="Open docs"
+                  aria-label="Open docs"
+                >
+                  <BookOpen className="sm:h-4 sm:w-4 h-5.5 w-5.5" />
+                </SoftIconButton>
+              ) : null}
+              <SoftIconButton
+                onClick={onNewChat}
+                className="flex h-11 w-11 items-center justify-center rounded-md sm:h-8 sm:w-8 cursor-pointer"
+                title="Go home"
+                aria-label="Go home"
+              >
+                <Edit className="sm:h-4 sm:w-4 h-5.5 w-5.5" />
+              </SoftIconButton>
+            </div>
           </div>
         </SidebarHeader>
 
@@ -163,16 +181,25 @@ export default function SnapshotsList({
                               : "border-border bg-secondary text-muted-foreground"
                           }`}
                           title={historyItem.pinned ? "Unpin" : "Pin"}
-                          aria-label={historyItem.pinned ? "Unpin history" : "Pin history"}
+                          aria-label={
+                            historyItem.pinned ? "Unpin history" : "Pin history"
+                          }
                         >
-                          <Pin className={cn("h-3.5 w-3.5", historyItem.pinned ? "-rotate-45 fill-white" : "")} />
+                          <Pin
+                            className={cn(
+                              "h-3.5 w-3.5",
+                              historyItem.pinned ? "-rotate-45 fill-white" : "",
+                            )}
+                          />
                         </button>
 
                         {isEditing ? (
                           <CalcInput
                             value={editingName}
                             autoFocus
-                            onChange={(event) => setEditingName(event.target.value)}
+                            onChange={(event) =>
+                              setEditingName(event.target.value)
+                            }
                             onBlur={submitEditing}
                             onKeyDown={(event) => {
                               if (event.key === "Enter") {

@@ -4,17 +4,29 @@ import HistoryControls from "@/app/calculator/components/HistoryControls";
 import { Link } from "react-router";
 import { SoftIconButton } from "../ui/calc-ui";
 
-function HomeHeader({ history, actions }) {
+function HomeHeader({ history, actions, route = "/" }) {
+  const isDocsRoute = route === "/docs";
+  const docsLinkClassName = `rounded-md border px-2.5 py-1 text-xs font-semibold transition-colors ${
+    isDocsRoute
+      ? "border-accent bg-accent text-foreground"
+      : "border-border bg-secondary/70 text-muted-foreground hover:bg-accent hover:text-foreground"
+  }`;
+
   return (
     <>
-      <Link
-        to="/"
-        className="text-center text-muted-foreground transition-colors hover:text-foreground"
-      >
-        <h1 className="text-2xl font-bold sm:text-3xl sm:hidden mx-auto -mb-1 pt-1 pb-2">
-          CookedCalc
-        </h1>
-      </Link>
+      <div className="flex items-center justify-center gap-2 pb-2 pt-1 sm:hidden">
+        <Link
+          to="/"
+          className="text-center text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <h1 className="mx-auto -mb-1 text-2xl font-bold sm:text-3xl">
+            CookedCalc
+          </h1>
+        </Link>
+        <Link to="/docs" className={docsLinkClassName}>
+          Docs
+        </Link>
+      </div>
 
       <div className="shrink-0 px-3 mx-auto flex w-full max-w-7xl flex-col">
         <div className="flex items-center justify-between gap-2 pb-2 py-2">
@@ -38,14 +50,19 @@ function HomeHeader({ history, actions }) {
             </SoftIconButton>
           </div>
 
-          <Link
-            to="/"
-            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <h1 className="text-xl font-bold sm:text-3xl max-sm:hidden">
-              CookedCalc
-            </h1>
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              to="/"
+              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <h1 className="text-xl font-bold sm:text-3xl max-sm:hidden">
+                CookedCalc
+              </h1>
+            </Link>
+            <Link to="/docs" className={`max-sm:hidden ${docsLinkClassName}`}>
+              Docs
+            </Link>
+          </div>
 
           <div className="flex items-center gap-2">
             <HistoryControls
