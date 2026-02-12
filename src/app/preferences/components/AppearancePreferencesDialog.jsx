@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+import { ChevronDown, X } from "lucide-react";
 import { CalcButton, SoftIconButton } from "@/components/ui/calc-ui";
 import { useEffect } from "react";
 
@@ -115,7 +115,13 @@ function AppearancePreferencesDialog({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+      onMouseDown={(event) => {
+        if (event.target !== event.currentTarget) return;
+        onClose?.();
+      }}
+    >
       <div className="flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-xl border border-border bg-card p-4">
         <div className="mb-3 flex items-start justify-between gap-3">
           <div>
@@ -191,10 +197,17 @@ function AppearancePreferencesDialog({
           </section>
         </div>
 
-        <div className="mt-4 flex justify-end">
-          <CalcButton variant="soft" onClick={onClose}>
-            Close
-          </CalcButton>
+        <div className="mt-4 grid grid-cols-[1fr_auto_1fr] items-center">
+          <div />
+          <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground">
+            <ChevronDown className="h-3.5 w-3.5" />
+            <span>Scroll</span>
+          </div>
+          <div className="justify-self-end">
+            <CalcButton variant="soft" onClick={onClose}>
+              Close
+            </CalcButton>
+          </div>
         </div>
       </div>
     </div>
