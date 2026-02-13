@@ -8,7 +8,7 @@ const HISTORY_DEBOUNCE_MS = 160;
 const PERSIST_DEBOUNCE_MS = 180;
 const GRADE_MIN = 0;
 const GRADE_MAX = 20;
-const GRADE_STEP = 0.25;
+const GRADE_STEP = 0.01;
 
 function clampRange(value, min, max) {
   return Math.min(max, Math.max(min, clampNumber(value)));
