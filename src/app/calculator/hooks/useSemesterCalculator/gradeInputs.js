@@ -10,6 +10,14 @@ function formatGradeValue(value) {
   return String(round2Value(value)).replace(/\.?0+$/, "");
 }
 
+function hasTrailingFractionZero(text) {
+  const valueText = String(text ?? "");
+  const dotIndex = valueText.indexOf(".");
+  if (dotIndex < 0) return false;
+  const fraction = valueText.slice(dotIndex + 1);
+  return fraction.length > 0 && fraction.endsWith("0");
+}
+
 function normalizeNumericText(rawValue, previousValue = "") {
   const previousText = String(previousValue ?? "");
   const nextText = String(rawValue ?? "").trim().replace(",", ".");
@@ -27,7 +35,7 @@ function normalizeNumericText(rawValue, previousValue = "") {
   const numeric = Number(nextText);
   if (!Number.isFinite(numeric)) return { mode: "invalid", text: previousText };
 
-  return { mode: "numeric", value: numeric };
+  return { mode: "numeric", value: numeric, text: nextText };
 }
 
 export function normalizeCoefInput(rawValue, previousValue = "") {
@@ -44,7 +52,12 @@ export function normalizeCoefInput(rawValue, previousValue = "") {
     return `${formatGradeValue(Math.max(0, wholeNumber))}.`;
   }
 
-  return formatGradeValue(Math.max(0, normalized.value));
+  const clamped = Math.max(0, normalized.value);
+  if (clamped === normalized.value && hasTrailingFractionZero(normalized.text)) {
+    return normalized.text;
+  }
+
+  return formatGradeValue(clamped);
 }
 
 export function normalizeGradeInput(rawValue, previousValue = "") {
@@ -63,5 +76,9 @@ export function normalizeGradeInput(rawValue, previousValue = "") {
   }
 
   const clamped = Math.min(GRADE_MAX, Math.max(GRADE_MIN, normalized.value));
+  if (clamped === normalized.value && hasTrailingFractionZero(normalized.text)) {
+    return normalized.text;
+  }
+
   return formatGradeValue(clamped);
 }
