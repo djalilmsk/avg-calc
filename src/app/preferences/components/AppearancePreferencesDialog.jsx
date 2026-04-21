@@ -2,6 +2,84 @@ import { ChevronDown, X } from "lucide-react";
 import { CalcButton, SoftIconButton } from "@/components/ui/calc-ui";
 import { useEffect } from "react";
 
+function clampChannel(value) {
+  return Math.max(0, Math.min(255, Math.round(value)));
+}
+
+function parseHexColor(value) {
+  if (typeof value !== "string") return null;
+  const normalized = value.trim();
+  const shortMatch = normalized.match(/^#([\da-f]{3})$/i);
+  if (shortMatch) {
+    const [r, g, b] = shortMatch[1].split("");
+    return {
+      r: Number.parseInt(`${r}${r}`, 16),
+      g: Number.parseInt(`${g}${g}`, 16),
+      b: Number.parseInt(`${b}${b}`, 16),
+    };
+  }
+
+  const fullMatch = normalized.match(/^#([\da-f]{6})$/i);
+  if (!fullMatch) return null;
+
+  return {
+    r: Number.parseInt(fullMatch[1].slice(0, 2), 16),
+    g: Number.parseInt(fullMatch[1].slice(2, 4), 16),
+    b: Number.parseInt(fullMatch[1].slice(4, 6), 16),
+  };
+}
+
+function toHexColor({ r, g, b }) {
+  return `#${[r, g, b]
+    .map((channel) => clampChannel(channel).toString(16).padStart(2, "0"))
+    .join("")}`;
+}
+
+function mixHexColors(base, target, weight = 0.5) {
+  const baseColor = parseHexColor(base);
+  const targetColor = parseHexColor(target);
+  if (!baseColor || !targetColor) return base;
+
+  const ratio = Math.max(0, Math.min(1, weight));
+  return toHexColor({
+    r: baseColor.r * ratio + targetColor.r * (1 - ratio),
+    g: baseColor.g * ratio + targetColor.g * (1 - ratio),
+    b: baseColor.b * ratio + targetColor.b * (1 - ratio),
+  });
+}
+
+function getPreviewBorder(theme, borderStyleId) {
+  const baseBorder = theme?.tokens?.["--border"] ?? "#353535";
+  const card = theme?.tokens?.["--card"] ?? "#202123";
+  const foreground = theme?.tokens?.["--foreground"] ?? "#ececec";
+
+  if (borderStyleId === "none") {
+    return {
+      borderColor: "transparent",
+      borderWidth: 0,
+    };
+  }
+
+  if (borderStyleId === "soft") {
+    return {
+      borderColor: mixHexColors(baseBorder, card, 0.58),
+      borderWidth: 1,
+    };
+  }
+
+  if (borderStyleId === "extra-hard") {
+    return {
+      borderColor: mixHexColors(baseBorder, foreground, 0.7),
+      borderWidth: 3,
+    };
+  }
+
+  return {
+    borderColor: baseBorder,
+    borderWidth: 2,
+  };
+}
+
 function FontCard({ label, description, active, onSelect, heading, body }) {
   return (
     <button
@@ -88,17 +166,67 @@ function RoundnessCard({ item, active, onSelect }) {
   );
 }
 
+function BorderStyleCard({ item, active, onSelect, previewTheme }) {
+  const previewBorder = getPreviewBorder(previewTheme, item.id);
+  const previewRadius = "var(--radius-md)";
+
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      className={`w-full rounded-lg border p-3 text-left transition-colors cursor-pointer ${
+        active
+          ? "border-primary bg-accent text-foreground"
+          : "border-border bg-secondary/70 text-muted-foreground hover:bg-accent hover:text-foreground"
+      }`}
+    >
+      <div
+        className="mb-2 flex gap-2 rounded-lg p-2"
+        style={{ backgroundColor: "var(--background)" }}
+      >
+        <div
+          className="h-8 flex-1"
+          style={{
+            backgroundColor: "var(--card)",
+            borderRadius: previewRadius,
+            borderStyle: "solid",
+            borderColor: previewBorder.borderColor,
+            borderWidth: previewBorder.borderWidth,
+          }}
+        />
+        <div
+          className="h-8 flex-1"
+          style={{
+            backgroundColor: "var(--secondary)",
+            borderRadius: previewRadius,
+            borderStyle: "solid",
+            borderColor: previewBorder.borderColor,
+            borderWidth: previewBorder.borderWidth,
+          }}
+        />
+      </div>
+      <div className="text-sm font-semibold truncate">{item.label}</div>
+      <div className="mt-0.5 text-xs opacity-90">{item.description}</div>
+    </button>
+  );
+}
+
 function AppearancePreferencesDialog({
   open,
   onClose,
   appearance,
   themes,
   fonts,
+  borderStyles,
   roundnessLevels,
   onThemeChange,
   onFontChange,
+  onBorderStyleChange,
   onRoundnessChange,
 }) {
+  const previewTheme =
+    themes.find((theme) => theme.id === appearance.themeId) ?? themes[0];
+
   useEffect(() => {
     if (!open) return undefined;
 
@@ -154,6 +282,23 @@ function AppearancePreferencesDialog({
                   item={item}
                   active={appearance.roundnessId === item.id}
                   onSelect={() => onRoundnessChange(item.id)}
+                />
+              ))}
+            </div>
+          </section>
+
+          <section>
+            <h4 className="mb-2 text-sm font-semibold text-foreground">
+              Border Style
+            </h4>
+            <div className="grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-4">
+              {borderStyles.map((item) => (
+                <BorderStyleCard
+                  key={item.id}
+                  item={item}
+                  active={appearance.borderStyleId === item.id}
+                  previewTheme={previewTheme}
+                  onSelect={() => onBorderStyleChange(item.id)}
                 />
               ))}
             </div>
