@@ -31,8 +31,17 @@ function TemplateCard({ template, onStart, onDelete, onEdit }) {
           onClick={handleOpenTemplate}
           className="group relative flex min-h-36 w-full cursor-pointer flex-col justify-between rounded-2xl border border-border bg-secondary/65 p-4 text-foreground transition-colors duration-200 hover:bg-accent lg:p-5"
         >
-          <ArrowRight className="absolute top-4 right-4 flex flex-col gap-3 opacity-0 transition-all duration-200 group-hover:-rotate-45 group-hover:opacity-100" />
-          <div className="flex flex-wrap gap-2 pr-8 text-sm text-muted-foreground">
+          <ArrowRight className="absolute top-4 right-4 flex flex-col gap-3 opacity-0 transition-all duration-300 ease-out group-hover:-rotate-45 group-hover:opacity-100" />
+          {template.isNew ? (
+            <span className="absolute top-4 right-4 inline-flex items-center gap-2 px-1 py-1 text-[0.68rem] font-semibold tracking-[0.24em] text-red-300 uppercase transition-opacity duration-300 ease-out group-hover:opacity-0">
+              <span
+                aria-hidden="true"
+                className="size-2 rounded-full bg-red-400"
+              />
+              New
+            </span>
+          ) : null}
+          <div className="flex flex-wrap gap-2 pr-20 text-sm text-muted-foreground">
             <span>{template.year}</span>
             <span className="text-muted-foreground/70">&middot;</span>
             <span>{template.semester}</span>

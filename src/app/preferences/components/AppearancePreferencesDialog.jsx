@@ -1,6 +1,17 @@
 import { ChevronDown, X } from "lucide-react";
 import { CalcButton, SoftIconButton } from "@/components/ui/calc-ui";
 import { useEffect } from "react";
+import {
+  APPEARANCE_THEMES,
+  BORDER_STYLES,
+  DEFAULT_APPEARANCE,
+  FONT_PRESETS,
+  ROUNDNESS_LEVELS,
+} from "../appearance-registry";
+
+function resolveOptions(options, fallback) {
+  return Array.isArray(options) && options.length > 0 ? options : fallback;
+}
 
 function clampChannel(value) {
   return Math.max(0, Math.min(255, Math.round(value)));
@@ -214,7 +225,7 @@ function BorderStyleCard({ item, active, onSelect, previewTheme }) {
 function AppearancePreferencesDialog({
   open,
   onClose,
-  appearance,
+  appearance = DEFAULT_APPEARANCE,
   themes,
   fonts,
   borderStyles,
@@ -224,8 +235,14 @@ function AppearancePreferencesDialog({
   onBorderStyleChange,
   onRoundnessChange,
 }) {
+  const safeAppearance = { ...DEFAULT_APPEARANCE, ...appearance };
+  const safeThemes = resolveOptions(themes, APPEARANCE_THEMES);
+  const safeFonts = resolveOptions(fonts, FONT_PRESETS);
+  const safeBorderStyles = resolveOptions(borderStyles, BORDER_STYLES);
+  const safeRoundnessLevels = resolveOptions(roundnessLevels, ROUNDNESS_LEVELS);
   const previewTheme =
-    themes.find((theme) => theme.id === appearance.themeId) ?? themes[0];
+    safeThemes.find((theme) => theme.id === safeAppearance.themeId) ??
+    safeThemes[0];
 
   useEffect(() => {
     if (!open) return undefined;
@@ -257,7 +274,7 @@ function AppearancePreferencesDialog({
               Preferences
             </h3>
             <p className="mt-1 text-xs text-muted-foreground">
-              Pick a color theme and font preset.
+              Pick a color theme, border style, font, and roundness.
             </p>
           </div>
           <SoftIconButton
@@ -276,12 +293,12 @@ function AppearancePreferencesDialog({
               Roundness
             </h4>
             <div className="grid gap-2 grid-cols-2 lg:grid-cols-5">
-              {roundnessLevels.map((item) => (
+              {safeRoundnessLevels.map((item) => (
                 <RoundnessCard
                   key={item.id}
                   item={item}
-                  active={appearance.roundnessId === item.id}
-                  onSelect={() => onRoundnessChange(item.id)}
+                  active={safeAppearance.roundnessId === item.id}
+                  onSelect={() => onRoundnessChange?.(item.id)}
                 />
               ))}
             </div>
@@ -292,13 +309,13 @@ function AppearancePreferencesDialog({
               Border Style
             </h4>
             <div className="grid gap-2 grid-cols-1 md:grid-cols-2 xl:grid-cols-4">
-              {borderStyles.map((item) => (
+              {safeBorderStyles.map((item) => (
                 <BorderStyleCard
                   key={item.id}
                   item={item}
-                  active={appearance.borderStyleId === item.id}
+                  active={safeAppearance.borderStyleId === item.id}
                   previewTheme={previewTheme}
-                  onSelect={() => onBorderStyleChange(item.id)}
+                  onSelect={() => onBorderStyleChange?.(item.id)}
                 />
               ))}
             </div>
@@ -309,13 +326,13 @@ function AppearancePreferencesDialog({
               Themes
             </h4>
             <div className="grid grid-cols-3 lg:grid-cols-4">
-              {themes.map((theme) => (
+              {safeThemes.map((theme) => (
                 <ThemeCard
                   key={theme.id}
                   label={theme.label}
                   description={theme.description}
-                  active={appearance.themeId === theme.id}
-                  onSelect={() => onThemeChange(theme.id)}
+                  active={safeAppearance.themeId === theme.id}
+                  onSelect={() => onThemeChange?.(theme.id)}
                   preview={theme}
                 />
               ))}
@@ -327,13 +344,13 @@ function AppearancePreferencesDialog({
               Fonts
             </h4>
             <div className="grid min-w-0 gap-2 overflow-x-hidden grid-cols-2 md:grid-cols-3">
-              {fonts.map((font) => (
+              {safeFonts.map((font) => (
                 <FontCard
                   key={font.id}
                   label={font.label}
                   description={font.description}
-                  active={appearance.fontId === font.id}
-                  onSelect={() => onFontChange(font.id)}
+                  active={safeAppearance.fontId === font.id}
+                  onSelect={() => onFontChange?.(font.id)}
                   heading={font.heading}
                   body={font.body}
                 />

@@ -49,6 +49,7 @@ function normalizeTemplate(template, fallbackId) {
     name: templateName,
     year: String(template?.year ?? "Custom"),
     semester: String(template?.semester ?? "--"),
+    isNew: Boolean(template?.isNew),
     rows: templateRows
   };
 }
@@ -78,6 +79,11 @@ function normalizeHistory(history, fallbackId) {
 }
 
 function mergeTemplates(defaultTemplates, persistedTemplates) {
+  const builtInTemplateIds = new Set(
+    defaultTemplates
+      .map((template) => String(template?.id ?? "").trim())
+      .filter(Boolean)
+  );
   const byId = new Map();
 
   for (const template of defaultTemplates) {
@@ -87,6 +93,9 @@ function mergeTemplates(defaultTemplates, persistedTemplates) {
   }
 
   for (const template of persistedTemplates) {
+    const templateId = String(template?.id ?? "").trim();
+    if (builtInTemplateIds.has(templateId)) continue;
+
     const normalized = normalizeTemplate(template, template?.id);
     if (!normalized) continue;
     byId.set(normalized.id, normalized);
