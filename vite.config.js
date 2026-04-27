@@ -22,6 +22,12 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       includeAssets: ["logo.svg", "logo.jpg", "robots.txt", "sitemap.xml"],
+      workbox: {
+        globPatterns: [
+          "**/*.{js,css,html,ico,png,svg,jpg,jpeg,gif,webp,webmanifest}",
+        ],
+        maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
+      },
       manifest: {
         name: "Semester Average Workspace",
         short_name: "CookedCalc",

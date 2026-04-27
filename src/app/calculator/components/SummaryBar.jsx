@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { StatChip } from "@/components/ui/calc-ui";
 import {
   createReactionPickerState,
@@ -31,6 +31,34 @@ const REACTION_GROUPS = {
   passing: PASSING_REACTIONS,
 };
 const NO_REACTIONS = [];
+const ALL_REACTIONS = [...UNDER_10_REACTIONS, ...PASSING_REACTIONS];
+const preloadedReactionAssets = new Map();
+
+function preloadReactionAsset(src) {
+  if (!src || preloadedReactionAssets.has(src)) return;
+  if (typeof window === "undefined" || typeof window.Image !== "function") return;
+
+  const image = new window.Image();
+  image.decoding = "async";
+  image.src = src;
+  preloadedReactionAssets.set(src, image);
+}
+
+function scheduleReactionPreload() {
+  if (typeof window === "undefined") return undefined;
+
+  const preload = () => {
+    ALL_REACTIONS.forEach(preloadReactionAsset);
+  };
+
+  if (typeof window.requestIdleCallback === "function") {
+    const idleId = window.requestIdleCallback(preload);
+    return () => window.cancelIdleCallback?.(idleId);
+  }
+
+  const timeoutId = window.setTimeout(preload, 0);
+  return () => window.clearTimeout(timeoutId);
+}
 
 function EmptyValue({ value }) {
   const displayValue = value === "" ? "-" : value;
@@ -74,6 +102,9 @@ export default function SummaryBar({ sumCoef, semesterAvg, rows = [] }) {
   const reactionAlt = isLowAverage
     ? "Low average reaction"
     : "Passing average reaction";
+  const reactionImageKey = reactionGif ? `${selectionKey}:${reactionGif}` : "";
+
+  useEffect(() => scheduleReactionPreload(), []);
 
   return (
     <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -84,10 +115,12 @@ export default function SummaryBar({ sumCoef, semesterAvg, rows = [] }) {
 
       {reactionGif && (
         <img
+          key={reactionImageKey}
           src={reactionGif}
           alt={reactionAlt}
           className="size-34 rounded-[var(--radius-md)] object-cover max-md:hidden"
-          loading="lazy"
+          loading="eager"
+          decoding="async"
         />
       )}
 
@@ -110,10 +143,12 @@ export default function SummaryBar({ sumCoef, semesterAvg, rows = [] }) {
         </div>
         {reactionGif && (
           <img
+            key={reactionImageKey}
             src={reactionGif}
             alt={reactionAlt}
             className="size-34 rounded-[var(--radius-md)] object-cover md:hidden"
-            loading="lazy"
+            loading="eager"
+            decoding="async"
           />
         )}
       </div>
