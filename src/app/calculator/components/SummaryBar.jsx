@@ -1,5 +1,36 @@
-import ayayay from "@/assets/ayayay-didine.gif";
+import { useMemo, useState } from "react";
 import { StatChip } from "@/components/ui/calc-ui";
+import {
+  createReactionPickerState,
+  pickNextReaction,
+} from "../reactionPicker";
+
+function loadReactionAssets(modules) {
+  return Object.entries(modules)
+    .sort(([firstPath], [secondPath]) => firstPath.localeCompare(secondPath))
+    .map(([, asset]) => asset)
+    .filter(Boolean);
+}
+
+const UNDER_10_REACTIONS = loadReactionAssets(
+  import.meta.glob("../../../assets/result-gifs/under-10/*.{gif,webp}", {
+    eager: true,
+    import: "default",
+  }),
+);
+
+const PASSING_REACTIONS = loadReactionAssets(
+  import.meta.glob("../../../assets/result-gifs/above-10/*.{gif,webp}", {
+    eager: true,
+    import: "default",
+  }),
+);
+
+const REACTION_GROUPS = {
+  low: UNDER_10_REACTIONS,
+  passing: PASSING_REACTIONS,
+};
+const NO_REACTIONS = [];
 
 function EmptyValue({ value }) {
   const displayValue = value === "" ? "-" : value;
@@ -8,6 +39,7 @@ function EmptyValue({ value }) {
 }
 
 export default function SummaryBar({ sumCoef, semesterAvg, rows = [] }) {
+  const [pickerState] = useState(createReactionPickerState);
   const allFieldsFilled =
     rows.length > 0 &&
     rows.every((row) => {
@@ -19,8 +51,29 @@ export default function SummaryBar({ sumCoef, semesterAvg, rows = [] }) {
         row.includeCa === false || String(row.ca ?? "").trim() !== "";
       return hasName && hasCoef && hasExam && hasTd;
     });
-  const isLowAverage =
-    semesterAvg !== "" && Number(semesterAvg) < 10 && allFieldsFilled;
+  const semesterAvgNumber = Number(semesterAvg);
+  const hasCompleteAverage =
+    semesterAvg !== "" && Number.isFinite(semesterAvgNumber) && allFieldsFilled;
+  const isLowAverage = hasCompleteAverage && semesterAvgNumber < 10;
+  const isPassingAverage = hasCompleteAverage && semesterAvgNumber >= 10;
+  const reactionKind = isLowAverage
+    ? "low"
+    : isPassingAverage
+      ? "passing"
+      : null;
+  const reactionCandidates = reactionKind
+    ? REACTION_GROUPS[reactionKind]
+    : NO_REACTIONS;
+  const selectionKey = reactionKind ? `${reactionKind}:${semesterAvg}` : "";
+
+  const reactionGif = useMemo(() => {
+    if (!selectionKey || !reactionKind) return null;
+
+    return pickNextReaction(reactionCandidates, pickerState);
+  }, [pickerState, reactionCandidates, reactionKind, selectionKey]);
+  const reactionAlt = isLowAverage
+    ? "Low average reaction"
+    : "Passing average reaction";
 
   return (
     <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -29,10 +82,10 @@ export default function SummaryBar({ sumCoef, semesterAvg, rows = [] }) {
         {sumCoef || 0}
       </StatChip>
 
-      {isLowAverage && (
+      {reactionGif && (
         <img
-          src={ayayay}
-          alt="Low average reaction"
+          src={reactionGif}
+          alt={reactionAlt}
           className="size-34 rounded-[var(--radius-md)] object-cover max-md:hidden"
           loading="lazy"
         />
@@ -55,10 +108,10 @@ export default function SummaryBar({ sumCoef, semesterAvg, rows = [] }) {
             )}
           </div>
         </div>
-        {isLowAverage && (
+        {reactionGif && (
           <img
-            src={ayayay}
-            alt="Low average reaction"
+            src={reactionGif}
+            alt={reactionAlt}
             className="size-34 rounded-[var(--radius-md)] object-cover md:hidden"
             loading="lazy"
           />

@@ -217,6 +217,7 @@ export function useSemesterCalculator() {
   useEffect(() => {
     if (!selectedHistoryId) return;
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Syncs the selected history snapshot after row edits.
     setHistories((currentHistories) => {
       const historyIndex = currentHistories.findIndex(
         (history) => history.id === selectedHistoryId

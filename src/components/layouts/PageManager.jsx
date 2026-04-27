@@ -1,3 +1,5 @@
+import { APP_SHORTCUTS } from "@/lib/shortcuts";
+import { useHotkey } from "@tanstack/react-hotkeys";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
 
@@ -26,30 +28,18 @@ function PageManager() {
     document.body.dataset.page = meta.page;
   }, [pathname]);
 
-  useEffect(() => {
-    function handleNewWorkspaceShortcut(event) {
-      if (!event.ctrlKey || !event.shiftKey) return;
-      if (event.metaKey || event.altKey) return;
-      if (event.key.toLowerCase() !== "o") return;
-
-      const target = event.target;
-      if (
-        target instanceof HTMLElement &&
-        (target.tagName === "INPUT" ||
-          target.tagName === "TEXTAREA" ||
-          target.isContentEditable)
-      ) {
-        return;
-      }
-
-      event.preventDefault();
+  useHotkey(
+    APP_SHORTCUTS.newWorkspace,
+    () => {
       navigate("/");
-    }
-
-    window.addEventListener("keydown", handleNewWorkspaceShortcut);
-    return () =>
-      window.removeEventListener("keydown", handleNewWorkspaceShortcut);
-  }, [navigate]);
+    },
+    {
+      ignoreInputs: true,
+      meta: {
+        name: "Open new workspace",
+      },
+    },
+  );
 
   return null;
 }

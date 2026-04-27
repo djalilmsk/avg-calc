@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useSidebar } from "@/components/ui/sidebar";
+import { useSidebar } from "@/components/ui/sidebar-context";
 import { useNavigate, useOutletContext } from "react-router";
 import TemplateDetailsDialog from "@/components/ui/template-details-dialog";
 import DesktopTemplatesView from "./components/DesktopTemplatesView";
