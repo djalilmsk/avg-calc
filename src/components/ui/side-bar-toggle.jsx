@@ -1,5 +1,5 @@
 import { PanelLeft } from "lucide-react";
-import { useSidebar } from "./sidebar";
+import { useSidebar } from "./sidebar-context";
 import { SoftIconButton } from "./calc-ui";
 
 function SidebarToggleButton() {

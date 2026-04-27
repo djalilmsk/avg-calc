@@ -64,16 +64,17 @@ You can:
 
 - `Enter` (inside add-module inputs): submit module
 - `Tab`: move between TD and Exam inputs
-- `Alt + Enter`: next history
-- `Alt + Shift + Enter`: previous history
-- `Ctrl + M`: focus add-module input
-- `Ctrl + Shift + O`: open home/new workspace
-- `Ctrl + Shift + H`: open "create template" for current history
-- `Ctrl + Shift + D`: duplicate current history
-- `Ctrl + Shift + Backspace`: delete current history
-- `Alt + Shift + P`: pin/unpin current history
-- `Ctrl + ArrowLeft`: undo
-- `Ctrl + ArrowRight`: redo
+- macOS `Option + Enter` / Windows `Alt + Enter`: next history
+- macOS `Option + Shift + Enter` / Windows `Alt + Shift + Enter`: previous history
+- macOS `Control + M` / Windows `Ctrl + M`: focus add-module input
+- macOS `Cmd + Shift + O` / Windows `Ctrl + Shift + O`: open home/new workspace
+- macOS `Cmd + Shift + H` / Windows `Ctrl + Shift + H`: open "create template" for current history
+- macOS `Cmd + Shift + D` / Windows `Ctrl + Shift + D`: duplicate current history
+- macOS `Cmd + Shift + Backspace` / Windows `Ctrl + Shift + Backspace`: delete current history
+- macOS `Option + Shift + P` / Windows `Alt + Shift + P`: pin/unpin current history
+- macOS `Cmd + ArrowLeft` / Windows `Ctrl + ArrowLeft`: undo
+- macOS `Cmd + ArrowRight` / Windows `Ctrl + ArrowRight`: redo
+- macOS `Control + B` / Windows `Ctrl + B`: toggle sidebar
 
 ## Storage Behavior
 
@@ -131,11 +132,33 @@ src/
     docs/         # in-app documentation page
     home/         # template/home landing UI
     preferences/  # themes, fonts, roundness settings
+  assets/
+    result-gifs/
+      above-10/   # reactions for passing averages
+      under-10/   # reactions for averages below 10
   components/
     layouts/      # shared app layout, headers, page manager
     seo/          # reusable SEO head component
     ui/           # reusable UI primitives
 ```
+
+## Result GIFs
+
+CookedCalc auto-loads result reactions from two folders:
+
+- `src/assets/result-gifs/under-10/` - shown when the semester average is below `10`
+- `src/assets/result-gifs/above-10/` - shown when the semester average is `10` or higher
+
+To add a new reaction, drop a `.gif` or `.webp` file into the right folder. No React import or code change is needed; Vite picks up files from those folders automatically during the build.
+
+Suggested contribution flow:
+
+1. Fork the repository and create a new branch
+2. Add the new `.gif` or `.webp` to `under-10` or `above-10`
+3. Run `npm run build`
+4. Open a pull request with the new reaction file
+
+Reaction PRs can then be reviewed, accepted, or declined like any other contribution.
 
 ## Contributing
 

@@ -2,9 +2,26 @@ import FakeInput from "@/app/home/components/FakeInput";
 import HistoryListRows from "@/app/calculator/components/HistoryListRows";
 import TemplateCard from "@/app/home/components/TemplateCard";
 import TemplateDetailsDialog from "@/components/ui/template-details-dialog";
+import { getShortcutKeyLabels } from "@/lib/shortcuts";
 import { cn } from "@/lib/utils";
-import { Plus } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  ArrowRightLeft,
+  ArrowUp,
+  CornerDownLeft,
+  Plus,
+} from "lucide-react";
 import { useState } from "react";
+
+const SHORTCUT_KEY_ICONS = {
+  ArrowLeft,
+  ArrowRight,
+  Backspace: ArrowLeft,
+  Enter: CornerDownLeft,
+  Shift: ArrowUp,
+  Tab: ArrowRightLeft,
+};
 
 function SectionItemCard({ item }) {
   const Icon = item.icon;
@@ -87,20 +104,31 @@ function Shortcut({ shortcutKey, isLast, isInText }) {
 }
 
 function ShortcutRow({ shortcut }) {
+  const shortcutKeys = shortcut.hotkey
+    ? [{ hotkey: shortcut.hotkey }]
+    : (shortcut.keys ?? []);
+
   return (
     <div className="flex max-md:flex-col md:items-center gap-3 justify-between py-3 text-sm">
       <span className="text-muted-foreground/90">{shortcut.action}</span>
-      <div className="flex flex-wrap items-center gap-1.5">
-        {shortcut.keys.map((key, index) => (
-          <Shortcut
-            key={index}
-            shortcutKey={key}
-            isLast={index === shortcut.keys.length - 1}
-          />
-        ))}
-      </div>
+      <ShortcutGroup shortcutKeys={shortcutKeys} />
     </div>
   );
+}
+
+function getShortcutParts(shortcutKey) {
+  if (
+    shortcutKey &&
+    typeof shortcutKey === "object" &&
+    typeof shortcutKey.hotkey === "string"
+  ) {
+    return getShortcutKeyLabels(shortcutKey.hotkey).map((label) => ({
+      icon: SHORTCUT_KEY_ICONS[label],
+      label,
+    }));
+  }
+
+  return [shortcutKey];
 }
 
 function toShortcutNode(shortcutKey) {
@@ -109,13 +137,13 @@ function toShortcutNode(shortcutKey) {
   if (
     shortcutKey &&
     typeof shortcutKey === "object" &&
-    shortcutKey.icon &&
     shortcutKey.label
   ) {
     const Icon = shortcutKey.icon;
     return (
       <span className="flex items-center gap-1">
-        <Icon className="size-3.5" /> {shortcutKey.label}
+        {Icon && <Icon className="size-3.5" />}
+        {shortcutKey.label}
       </span>
     );
   }
@@ -123,15 +151,36 @@ function toShortcutNode(shortcutKey) {
   return shortcutKey;
 }
 
+function ShortcutGroup({ shortcutKeys, isInText = false }) {
+  const shortcutParts = shortcutKeys.flatMap(getShortcutParts);
+
+  if (isInText) {
+    return shortcutParts.map((shortcutKey, index) => (
+      <Shortcut
+        key={index}
+        shortcutKey={toShortcutNode(shortcutKey)}
+        isLast={index === shortcutParts.length - 1}
+        isInText
+      />
+    ));
+  }
+
+  return (
+    <div className="flex flex-wrap items-center gap-1.5">
+      {shortcutParts.map((shortcutKey, index) => (
+        <Shortcut
+          key={index}
+          shortcutKey={toShortcutNode(shortcutKey)}
+          isLast={index === shortcutParts.length - 1}
+          isInText={isInText}
+        />
+      ))}
+    </div>
+  );
+}
+
 function InlineShortcutGroup({ shortcutKeys }) {
-  return shortcutKeys.map((shortcutKey, index) => (
-    <Shortcut
-      key={index}
-      shortcutKey={toShortcutNode(shortcutKey)}
-      isLast={index === shortcutKeys.length - 1}
-      isInText
-    />
-  ));
+  return <ShortcutGroup shortcutKeys={shortcutKeys} isInText />;
 }
 
 const MAX_SIDEBAR_PREVIEW_ROWS = 6;

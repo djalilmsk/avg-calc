@@ -1,11 +1,7 @@
 import {
-  ArrowLeft,
-  ArrowRightLeft,
-  ArrowUp,
   BookOpen,
   Compass,
   Copy,
-  CornerDownLeft,
   Edit,
   Github,
   History,
@@ -22,15 +18,7 @@ import {
   UserRound,
   X,
 } from "lucide-react";
-
-function shortcutKey(Icon, label) {
-  return (
-    <span className="inline-flex items-center gap-1">
-      {Icon && <Icon className="size-3.5" />}
-      {label}
-    </span>
-  );
-}
+import { APP_SHORTCUTS } from "@/lib/shortcuts";
 
 const START_FAST_TEMPLATES = [
   {
@@ -62,7 +50,7 @@ const START_FAST_GUIDES = [
         type: "paragraph",
         textBefore:
           "You can start from the Add Modules bar by adding your modules and hitting ",
-        shortcutKeys: [{ icon: CornerDownLeft, label: "Enter" }],
+        shortcutKeys: [{ hotkey: APP_SHORTCUTS.submitModule }],
       },
       {
         type: "preview",
@@ -75,7 +63,7 @@ const START_FAST_GUIDES = [
         className: "mt-4",
         textBefore:
           "That adds the module to your workspace. You can start using it right away by putting your cursor in the module TD field and typing. You can also use keyboard shortcuts to quickly navigate between Exam and TD by hitting ",
-        shortcutKeys: [{ icon: ArrowRightLeft, label: "Tab" }],
+        shortcutKeys: [{ hotkey: APP_SHORTCUTS.navigateGradeFields }],
       },
     ],
   },
@@ -280,82 +268,56 @@ export const DOC_SECTIONS = [
     icon: Keyboard,
     shortcuts: [
       {
-        keys: [shortcutKey(null, "Alt"), shortcutKey(CornerDownLeft, "Enter")],
+        hotkey: APP_SHORTCUTS.nextHistory,
         action: "Next history",
       },
       {
-        keys: [
-          shortcutKey(null, "Alt"),
-          shortcutKey(ArrowUp, "Shift"),
-          shortcutKey(CornerDownLeft, "Enter"),
-        ],
+        hotkey: APP_SHORTCUTS.previousHistory,
         action: "Previous history",
       },
       {
-        keys: [shortcutKey(CornerDownLeft, "Enter")],
+        hotkey: APP_SHORTCUTS.submitModule,
         action: "Submit while typing module in add bar",
       },
       {
-        keys: [
-          shortcutKey(null, "Ctrl"),
-          shortcutKey(ArrowUp, "Shift"),
-          shortcutKey(null, "O"),
-        ],
+        hotkey: APP_SHORTCUTS.newWorkspace,
         action: "Open new workspace",
       },
       {
-        keys: [shortcutKey(ArrowRightLeft, "Tab")],
+        hotkey: APP_SHORTCUTS.navigateGradeFields,
         action: "Navigate between Exam and TD fields while typing",
       },
       {
-        keys: [
-          shortcutKey(null, "Ctrl"),
-          shortcutKey(ArrowUp, "Shift"),
-          shortcutKey(null, "M"),
-        ],
+        hotkey: APP_SHORTCUTS.createTemplate,
         action: "Open create-template dialog for current history",
       },
       {
-        keys: [
-          shortcutKey(null, "Ctrl"),
-          shortcutKey(ArrowUp, "Shift"),
-          shortcutKey(null, "D"),
-        ],
+        hotkey: APP_SHORTCUTS.duplicateHistory,
         action: "Duplicate current history",
       },
       {
-        keys: [
-          shortcutKey(null, "Ctrl"),
-          shortcutKey(ArrowUp, "Shift"),
-          shortcutKey(ArrowLeft, "Backspace"),
-        ],
+        hotkey: APP_SHORTCUTS.deleteHistory,
         action: "Delete current history",
       },
       {
-        keys: [
-          shortcutKey(null, "Alt"),
-          shortcutKey(ArrowUp, "Shift"),
-          shortcutKey(null, "P"),
-        ],
+        hotkey: APP_SHORTCUTS.toggleHistoryPinned,
         action: "Pin/unpin current history",
       },
       {
-        keys: [
-          shortcutKey(null, "Ctrl"),
-          shortcutKey(ArrowRightLeft, "ArrowLeft"),
-        ],
+        hotkey: APP_SHORTCUTS.undo,
         action: "Undo",
       },
       {
-        keys: [
-          shortcutKey(null, "Ctrl"),
-          shortcutKey(ArrowRightLeft, "ArrowRight"),
-        ],
+        hotkey: APP_SHORTCUTS.redo,
         action: "Redo",
       },
       {
-        keys: [shortcutKey(null, "Ctrl"), shortcutKey(null, "M")],
+        hotkey: APP_SHORTCUTS.focusAddModule,
         action: "Focus Add Module input",
+      },
+      {
+        hotkey: APP_SHORTCUTS.toggleSidebar,
+        action: "Toggle sidebar",
       },
     ],
   },

@@ -1,7 +1,9 @@
 import SnapshotsList from "@/app/calculator/components/SnapshotsList";
 import { useSemesterCalculator } from "@/app/calculator/hooks/useSemesterCalculator";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { APP_SHORTCUTS } from "@/lib/shortcuts";
+import { useHotkeys } from "@tanstack/react-hotkeys";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { startSidebarResize } from "./lib/side-bar-resize";
 import { Outlet, useLocation, useNavigate } from "react-router";
 import HomeHeader from "./components/layouts/HomeHeader";
@@ -81,118 +83,33 @@ function Layout() {
       ? selectedHistoryId
       : null;
 
-  useEffect(() => {
-    function handleHistoryShortcut(event) {
-      if (
-        shouldShowAddModuleBar &&
-        event.ctrlKey &&
-        !event.shiftKey &&
-        !event.altKey &&
-        !event.metaKey &&
-        event.key.toLowerCase() === "m"
-      ) {
-        event.preventDefault();
+  const focusAddModuleInput = useCallback(() => {
+    const moduleInput = document.querySelector('[data-add-module-input="true"]');
+    if (!(moduleInput instanceof HTMLInputElement)) return false;
+    moduleInput.focus();
+    moduleInput.select();
+    return true;
+  }, []);
 
-        const focusAddModuleInput = () => {
-          const moduleInput = document.querySelector(
-            '[data-add-module-input="true"]',
-          );
-          if (!(moduleInput instanceof HTMLInputElement)) return false;
-          moduleInput.focus();
-          moduleInput.select();
-          return true;
-        };
+  const handleFocusAddModuleInput = useCallback(() => {
+    if (focusAddModuleInput()) return;
 
-        if (focusAddModuleInput()) return;
+    const openComposerButton = document.querySelector(
+      '[data-add-module-open="true"]',
+    );
+    if (openComposerButton instanceof HTMLButtonElement) {
+      openComposerButton.click();
+      window.setTimeout(() => {
+        focusAddModuleInput();
+      }, 0);
+    }
+  }, [focusAddModuleInput]);
 
-        const openComposerButton = document.querySelector(
-          '[data-add-module-open="true"]',
-        );
-        if (openComposerButton instanceof HTMLButtonElement) {
-          openComposerButton.click();
-          window.setTimeout(() => {
-            focusAddModuleInput();
-          }, 0);
-        }
-        return;
-      }
-
-      if (isCalculatorRoute && activeRouteHistoryId) {
-        if (
-          event.ctrlKey &&
-          event.shiftKey &&
-          !event.altKey &&
-          !event.metaKey
-        ) {
-          const lowerKey = event.key.toLowerCase();
-
-          if (lowerKey === "h") {
-            event.preventDefault();
-            setTemplateDialogHistoryId(activeRouteHistoryId);
-            return;
-          }
-
-          if (lowerKey === "d") {
-            event.preventDefault();
-            const duplicated = actions.duplicateHistory(activeRouteHistoryId);
-            if (duplicated) {
-              navigate(`/calc/${duplicated.id}`);
-            }
-            return;
-          }
-
-          if (event.key === "Backspace") {
-            event.preventDefault();
-            actions.deleteHistory(activeRouteHistoryId);
-            navigate("/");
-            return;
-          }
-        }
-
-        if (
-          event.altKey &&
-          event.shiftKey &&
-          !event.ctrlKey &&
-          !event.metaKey &&
-          event.key.toLowerCase() === "p"
-        ) {
-          event.preventDefault();
-          actions.toggleHistoryPinned(activeRouteHistoryId);
-          return;
-        }
-
-        if (
-          event.ctrlKey &&
-          !event.shiftKey &&
-          !event.altKey &&
-          !event.metaKey &&
-          event.key === "ArrowLeft"
-        ) {
-          event.preventDefault();
-          actions.undo();
-          return;
-        }
-
-        if (
-          event.ctrlKey &&
-          !event.shiftKey &&
-          !event.altKey &&
-          !event.metaKey &&
-          event.key === "ArrowRight"
-        ) {
-          event.preventDefault();
-          actions.redo();
-          return;
-        }
-      }
-
-      if (event.key !== "Enter" || !event.altKey) return;
-      if (event.ctrlKey || event.metaKey) return;
-
+  const navigateHistoryByStep = useCallback(
+    (direction) => {
       const totalHistories = histories.length;
       if (totalHistories === 0) return;
 
-      const direction = event.shiftKey ? -1 : 1;
       const currentIndex = histories.findIndex(
         (historyItem) => historyItem.id === activeRouteHistoryId,
       );
@@ -204,20 +121,137 @@ function Layout() {
       const nextHistoryId = histories[nextIndex]?.id;
       if (!nextHistoryId) return;
 
-      event.preventDefault();
       navigate(`/calc/${nextHistoryId}`);
-    }
+    },
+    [activeRouteHistoryId, histories, navigate],
+  );
 
-    window.addEventListener("keydown", handleHistoryShortcut);
-    return () => window.removeEventListener("keydown", handleHistoryShortcut);
+  const calculatorHotkeys = useMemo(() => {
+    const hasActiveCalculatorHistory = Boolean(
+      isCalculatorRoute && activeRouteHistoryId,
+    );
+
+    return [
+      {
+        hotkey: APP_SHORTCUTS.focusAddModule,
+        callback: handleFocusAddModuleInput,
+        options: {
+          enabled: shouldShowAddModuleBar,
+          ignoreInputs: false,
+          meta: {
+            name: "Focus Add Module input",
+          },
+        },
+      },
+      {
+        hotkey: APP_SHORTCUTS.nextHistory,
+        callback: () => navigateHistoryByStep(1),
+        options: {
+          enabled: histories.length > 0,
+          ignoreInputs: false,
+          meta: {
+            name: "Next history",
+          },
+        },
+      },
+      {
+        hotkey: APP_SHORTCUTS.previousHistory,
+        callback: () => navigateHistoryByStep(-1),
+        options: {
+          enabled: histories.length > 0,
+          ignoreInputs: false,
+          meta: {
+            name: "Previous history",
+          },
+        },
+      },
+      {
+        hotkey: APP_SHORTCUTS.createTemplate,
+        callback: () => setTemplateDialogHistoryId(activeRouteHistoryId),
+        options: {
+          enabled: hasActiveCalculatorHistory,
+          ignoreInputs: false,
+          meta: {
+            name: "Open create-template dialog for current history",
+          },
+        },
+      },
+      {
+        hotkey: APP_SHORTCUTS.duplicateHistory,
+        callback: () => {
+          const duplicated = actions.duplicateHistory(activeRouteHistoryId);
+          if (duplicated) {
+            navigate(`/calc/${duplicated.id}`);
+          }
+        },
+        options: {
+          enabled: hasActiveCalculatorHistory,
+          ignoreInputs: false,
+          meta: {
+            name: "Duplicate current history",
+          },
+        },
+      },
+      {
+        hotkey: APP_SHORTCUTS.deleteHistory,
+        callback: () => {
+          actions.deleteHistory(activeRouteHistoryId);
+          navigate("/");
+        },
+        options: {
+          enabled: hasActiveCalculatorHistory,
+          ignoreInputs: false,
+          meta: {
+            name: "Delete current history",
+          },
+        },
+      },
+      {
+        hotkey: APP_SHORTCUTS.toggleHistoryPinned,
+        callback: () => actions.toggleHistoryPinned(activeRouteHistoryId),
+        options: {
+          enabled: hasActiveCalculatorHistory,
+          ignoreInputs: false,
+          meta: {
+            name: "Pin/unpin current history",
+          },
+        },
+      },
+      {
+        hotkey: APP_SHORTCUTS.undo,
+        callback: actions.undo,
+        options: {
+          enabled: hasActiveCalculatorHistory,
+          ignoreInputs: false,
+          meta: {
+            name: "Undo",
+          },
+        },
+      },
+      {
+        hotkey: APP_SHORTCUTS.redo,
+        callback: actions.redo,
+        options: {
+          enabled: hasActiveCalculatorHistory,
+          ignoreInputs: false,
+          meta: {
+            name: "Redo",
+          },
+        },
+      },
+    ];
   }, [
     actions,
     activeRouteHistoryId,
+    handleFocusAddModuleInput,
     histories,
     isCalculatorRoute,
     navigate,
+    navigateHistoryByStep,
     shouldShowAddModuleBar,
   ]);
+
+  useHotkeys(calculatorHotkeys, { conflictBehavior: "allow" });
 
   return (
     <SidebarProvider

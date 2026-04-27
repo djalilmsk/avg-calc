@@ -1,5 +1,5 @@
 import { useState, forwardRef } from "react";
-import { useSidebar } from "@/components/ui/sidebar";
+import { useSidebar } from "@/components/ui/sidebar-context";
 import { cn } from "@/lib/utils";
 import {
   CalcButton,
