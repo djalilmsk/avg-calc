@@ -15,9 +15,11 @@ export default function HistoryControls({
     appearance,
     themes,
     fonts,
+    borderStyles,
     roundnessLevels,
     setThemeId,
     setFontId,
+    setBorderStyleId,
     setRoundnessId,
   } =
     useAppearanceSettings();
@@ -65,9 +67,11 @@ export default function HistoryControls({
         appearance={appearance}
         themes={themes}
         fonts={fonts}
+        borderStyles={borderStyles}
         roundnessLevels={roundnessLevels}
         onThemeChange={setThemeId}
         onFontChange={setFontId}
+        onBorderStyleChange={setBorderStyleId}
         onRoundnessChange={setRoundnessId}
       />
     </>

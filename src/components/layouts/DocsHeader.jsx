@@ -13,9 +13,11 @@ function DocsHeader() {
     appearance,
     themes,
     fonts,
+    borderStyles,
     roundnessLevels,
     setThemeId,
     setFontId,
+    setBorderStyleId,
     setRoundnessId,
   } = useAppearanceSettings();
   const docsLinkClassName = `rounded-md border px-2.5 py-1 text-xs font-semibold transition-colors "border-accent bg-accent text-foreground"`;
@@ -101,9 +103,11 @@ function DocsHeader() {
         appearance={appearance}
         themes={themes}
         fonts={fonts}
+        borderStyles={borderStyles}
         roundnessLevels={roundnessLevels}
         onThemeChange={setThemeId}
         onFontChange={setFontId}
+        onBorderStyleChange={setBorderStyleId}
         onRoundnessChange={setRoundnessId}
       />
     </>

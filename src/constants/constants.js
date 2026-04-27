@@ -31,6 +31,14 @@ function createRow(
 
 const templates = [
   [
+    createRow("Analyse numerique", 4),
+    createRow("BDD : Optimisation et gestion des acces", 4),
+    createRow("Compilation 1 (COMPIL1)", 4),
+    createRow("Conception de logiciels", 4),
+    createRow("Programmation WEB (PWEB)", 3),
+    createRow("Introduction a la securite Informatique (ISEC)", 3),
+  ],
+  [
     createRow("Algorithmique et Complexite avancees", 4),
     createRow("BDD: Administration et architecture", 4),
     createRow("Fondements de l'IA (FIA)", 2),
@@ -73,24 +81,32 @@ export const DEFAULT_ROWS = templates[0];
 
 export const START_TEMPLATES = [
   {
+    id: "software-engineering-3y-s2-engineering",
+    name: "Software Engineering",
+    year: "3rd Year",
+    semester: "S2",
+    isNew: true,
+    rows: templates[0],
+  },
+  {
     id: "software-engineering-3y-s1-engineering",
     name: "Software Engineering",
     year: "3rd Year",
     semester: "S1",
-    rows: templates[0],
+    rows: templates[1],
   },
   {
     id: "cyber-security-3y-s1-engineering",
     name: "Cyber Security",
     year: "3rd Year",
     semester: "S1",
-    rows: templates[1],
+    rows: templates[2],
   },
   {
     id: "computer-science-3y-s1-engineering",
     name: "Computer Science",
     year: "3rd Year",
     semester: "S1",
-    rows: templates[2],
+    rows: templates[3],
   }
 ];
