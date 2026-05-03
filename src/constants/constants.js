@@ -32,11 +32,11 @@ function createRow(
 const templates = [
   [
     createRow("Analyse numerique", 4),
-    createRow("BDD : Optimisation et gestion des acces", 4),
-    createRow("Compilation 1 (COMPIL1)", 4),
-    createRow("Conception de logiciels", 4),
-    createRow("Programmation WEB (PWEB)", 3),
-    createRow("Introduction a la securite Informatique (ISEC)", 3),
+    createRow("BDD : Optimisation et gestion des acces", 3),
+    createRow("COMPIL1: Compilation 1", 4),
+    createRow("CL: Conception de logiciels", 4),
+    createRow("PWEB: Programmation WEB", 3),
+    createRow("ISEC: Introduction a la securite Informatique", 2),
   ],
   [
     createRow("Algorithmique et Complexite avancees", 4),
