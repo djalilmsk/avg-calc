@@ -36,7 +36,7 @@ function TemplateCard({ template, onStart, onDelete, onEdit }) {
             <span className="absolute top-4 right-4 inline-flex items-center gap-2 px-1 py-1 text-[0.68rem] font-semibold tracking-[0.24em] text-red-300 uppercase transition-opacity duration-300 ease-out group-hover:opacity-0">
               <span
                 aria-hidden="true"
-                className="size-2 rounded-full bg-red-400"
+                className="size-2 animate-new-template-dot-opacity rounded-full bg-red-400 motion-reduce:animate-none"
               />
               New
             </span>
