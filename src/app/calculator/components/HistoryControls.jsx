@@ -1,4 +1,4 @@
-import { Redo2, Settings, Undo2 } from "lucide-react";
+import { Redo2, Settings, Undo2, Share } from "lucide-react";
 import { CalcButton } from "@/components/ui/calc-ui";
 import { useState } from "react";
 import { useAppearanceSettings } from "@/app/preferences/useAppearanceSettings";
@@ -8,7 +8,8 @@ export default function HistoryControls({
   canUndo,
   canRedo,
   onUndo,
-  onRedo
+  onRedo,
+  onExport
 }) {
   const [isPreferencesOpen, setIsPreferencesOpen] = useState(false);
   const {
@@ -49,6 +50,18 @@ export default function HistoryControls({
           >
             <Redo2 className="sm:h-4 sm:w-4 h-6 w-6" />
           </CalcButton>
+
+          {onExport && (
+            <CalcButton
+              onClick={onExport}
+              variant="soft"
+              className="flex h-11 w-11 items-center justify-center rounded-lg px-0 sm:h-9 sm:w-9"
+              title="Share Template"
+              aria-label="Share Template"
+            >
+              <Share className="sm:h-4 sm:w-4 h-6 w-6" />
+            </CalcButton>
+          )}
 
           <CalcButton
             onClick={() => setIsPreferencesOpen(true)}
