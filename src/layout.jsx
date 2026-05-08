@@ -8,6 +8,7 @@ import { startSidebarResize } from "./lib/side-bar-resize";
 import { Outlet, useLocation, useNavigate } from "react-router";
 import HomeHeader from "./components/layouts/HomeHeader";
 import AddModuleBar from "./components/layouts/AddModuleBar";
+import TemplateExportDialog from "@/components/ui/template-export-dialog";
 
 function Layout() {
   const location = useLocation();
@@ -17,8 +18,15 @@ function Layout() {
   const isCalculatorRoute = route.startsWith("/calc/");
   const shouldShowAddModuleBar = isHomeRoute || isCalculatorRoute;
   const calculator = useSemesterCalculator();
-  const { actions, history, histories, selectedHistoryId, templates } =
-    calculator;
+  const {
+    actions,
+    getHistoryById,
+    history,
+    histories,
+    rows,
+    selectedHistoryId,
+    templates,
+  } = calculator;
   const { discardSelectedTemplateHistoryIfEmpty } = actions;
 
   const [sidebarWidth, setSidebarWidth] = useState(() => {
@@ -30,6 +38,8 @@ function Layout() {
   const isResizingRef = useRef(false);
   const [isWrapped, setIsWrapped] = useState(false);
   const [templateDialogHistoryId, setTemplateDialogHistoryId] = useState(null);
+  const [exportHistoryId, setExportHistoryId] = useState(null);
+  const [exportIncludeGrades, setExportIncludeGrades] = useState(false);
   const resizeObserverRef = useRef(null);
 
   const addModuleBarRef = useCallback((node) => {
@@ -82,6 +92,20 @@ function Layout() {
     : isHomeRoute
       ? selectedHistoryId
       : null;
+
+  const exportHistoryPayload = useMemo(() => {
+    if (!exportHistoryId) return null;
+
+    const historyItem = getHistoryById(exportHistoryId);
+    if (!historyItem) return null;
+
+    return {
+      name: historyItem.name,
+      year: "Custom",
+      semester: "--",
+      rows: exportHistoryId === selectedHistoryId ? rows : historyItem.rows,
+    };
+  }, [exportHistoryId, getHistoryById, rows, selectedHistoryId]);
 
   const focusAddModuleInput = useCallback(() => {
     const moduleInput = document.querySelector('[data-add-module-input="true"]');
@@ -274,6 +298,10 @@ function Layout() {
             navigate(`/calc/${duplicated.id}`);
           }
         }}
+        onExportHistory={(historyId) => {
+          setExportHistoryId(historyId);
+          setExportIncludeGrades(false);
+        }}
         onRenameHistory={actions.renameHistory}
         onDeleteHistory={(historyId) => {
           actions.deleteHistory(historyId);
@@ -315,6 +343,13 @@ function Layout() {
             }
           />
         ) : null}
+        <TemplateExportDialog
+          payload={exportHistoryPayload}
+          allowIncludeGrades
+          includeGrades={exportIncludeGrades}
+          onIncludeGradesChange={setExportIncludeGrades}
+          onClose={() => setExportHistoryId(null)}
+        />
       </SidebarInset>
     </SidebarProvider>
   );

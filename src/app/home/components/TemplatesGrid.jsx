@@ -5,6 +5,7 @@ function TemplatesGrid({
   onStart,
   onDelete,
   onEdit,
+  onExport,
   className = "",
 }) {
   return (
@@ -16,6 +17,7 @@ function TemplatesGrid({
           onStart={onStart}
           onDelete={onDelete}
           onEdit={onEdit}
+          onExport={onExport}
         />
       ))}
     </div>

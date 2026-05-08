@@ -1,11 +1,17 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSidebar } from "@/components/ui/sidebar-context";
-import { useNavigate, useOutletContext } from "react-router";
+import { useLocation, useNavigate, useOutletContext } from "react-router";
 import TemplateDetailsDialog from "@/components/ui/template-details-dialog";
+import TemplateExportDialog from "@/components/ui/template-export-dialog";
 import DesktopTemplatesView from "./components/DesktopTemplatesView";
 import MobileTemplatesView from "./components/MobileTemplatesView";
 import TemplatesOverflowDialog from "./components/TemplatesOverflowDialog";
 import SeoHead from "@/components/seo/SeoHead";
+import {
+  decodeTemplateSharePayload,
+  TEMPLATE_SHARE_PARAM,
+} from "@/app/calculator/template-share";
+import { X } from "lucide-react";
 
 const MOBILE_TEMPLATE_LIMIT = 4;
 
@@ -21,9 +27,13 @@ function createEditDraft(template) {
 function Home() {
   const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1024);
   const [editingTemplateDraft, setEditingTemplateDraft] = useState(null);
+  const [exportingTemplate, setExportingTemplate] = useState(null);
+  const [importError, setImportError] = useState("");
   const [isTemplatesDialogOpen, setIsTemplatesDialogOpen] = useState(false);
   const [isMobileExpanded, setIsMobileExpanded] = useState(false);
+  const importedSearchRef = useRef("");
   const { isMobile } = useSidebar();
+  const location = useLocation();
   const navigate = useNavigate();
   const { templates = [], actions } = useOutletContext();
   const desktopTemplateLimit = isLargeScreen ? 4 : 3;
@@ -48,6 +58,45 @@ function Home() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const rawTemplatePayload = searchParams.get(TEMPLATE_SHARE_PARAM);
+    if (!rawTemplatePayload) {
+      importedSearchRef.current = "";
+      return;
+    }
+    if (importedSearchRef.current === rawTemplatePayload) return;
+    importedSearchRef.current = rawTemplatePayload;
+
+    const importedPayload = decodeTemplateSharePayload(rawTemplatePayload);
+    if (!importedPayload) {
+      queueMicrotask(() => {
+        setImportError(
+          "Template import failed. The link is invalid or unsupported.",
+        );
+        navigate("/", { replace: true });
+      });
+      return;
+    }
+
+    const historyItem =
+      actions.createHistoryFromImportedTemplate?.(importedPayload);
+    if (!historyItem) {
+      queueMicrotask(() => {
+        setImportError(
+          "Template import failed. The link is invalid or unsupported.",
+        );
+        navigate("/", { replace: true });
+      });
+      return;
+    }
+
+    queueMicrotask(() => {
+      setImportError("");
+      navigate(`/calc/${historyItem.id}`, { replace: true });
+    });
+  }, [actions, location.search, navigate]);
+
   function handleStartFromTemplate(templateId) {
     setIsTemplatesDialogOpen(false);
     const historyItem = actions.createHistoryFromTemplate(templateId);
@@ -63,6 +112,12 @@ function Home() {
     if (!template) return;
     setIsTemplatesDialogOpen(false);
     setEditingTemplateDraft(createEditDraft(template));
+  }
+
+  function handleExportTemplate(template) {
+    if (!template) return;
+    setIsTemplatesDialogOpen(false);
+    setExportingTemplate(template);
   }
 
   function handleEditDraftChange(key, value) {
@@ -126,6 +181,21 @@ function Home() {
         ]}
       />
 
+      {importError ? (
+        <div className="fixed top-4 left-1/2 z-50 flex w-[calc(100%-2rem)] max-w-md -translate-x-1/2 items-center gap-3 rounded-xl border border-destructive/40 bg-card px-3 py-2 text-sm text-foreground shadow-lg">
+          <p className="flex-1">{importError}</p>
+          <button
+            type="button"
+            onClick={() => setImportError("")}
+            className="flex size-8 cursor-pointer items-center justify-center rounded-md border border-border bg-secondary text-muted-foreground hover:bg-accent hover:text-foreground"
+            aria-label="Dismiss import error"
+            title="Dismiss"
+          >
+            <X className="size-4" />
+          </button>
+        </div>
+      ) : null}
+
       {!isMobile ? (
         <DesktopTemplatesView
           templates={desktopTemplates}
@@ -134,6 +204,7 @@ function Home() {
           onStart={handleStartFromTemplate}
           onDelete={handleDeleteTemplate}
           onEdit={handleOpenTemplateEdit}
+          onExport={handleExportTemplate}
         />
       ) : (
         <MobileTemplatesView
@@ -144,6 +215,7 @@ function Home() {
           onStart={handleStartFromTemplate}
           onDelete={handleDeleteTemplate}
           onEdit={handleOpenTemplateEdit}
+          onExport={handleExportTemplate}
         />
       )}
 
@@ -154,6 +226,12 @@ function Home() {
         onStart={handleStartFromTemplate}
         onDelete={handleDeleteTemplate}
         onEdit={handleOpenTemplateEdit}
+        onExport={handleExportTemplate}
+      />
+
+      <TemplateExportDialog
+        payload={exportingTemplate}
+        onClose={() => setExportingTemplate(null)}
       />
 
       {editingTemplateDraft ? (

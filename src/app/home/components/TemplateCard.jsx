@@ -4,9 +4,9 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import { ArrowRight, Pen, Trash2 } from "lucide-react";
+import { ArrowRight, Pen, Share2, Trash2 } from "lucide-react";
 
-function TemplateCard({ template, onStart, onDelete, onEdit }) {
+function TemplateCard({ template, onStart, onDelete, onEdit, onExport }) {
   function handleOpenTemplate() {
     onStart?.(template.id);
   }
@@ -21,6 +21,10 @@ function TemplateCard({ template, onStart, onDelete, onEdit }) {
     const shouldDelete = window.confirm("Delete this template?");
     if (!shouldDelete) return;
     onDelete(template.id);
+  }
+
+  function handleExportTemplate() {
+    onExport?.(template);
   }
 
   return (
@@ -52,6 +56,9 @@ function TemplateCard({ template, onStart, onDelete, onEdit }) {
         </button>
       </ContextMenuTrigger>
       <ContextMenuContent>
+        <ContextMenuItem onSelect={handleExportTemplate}>
+          <Share2 /> Export
+        </ContextMenuItem>
         <ContextMenuItem onSelect={handleEditTemplate}>
           <Pen /> Edit
         </ContextMenuItem>

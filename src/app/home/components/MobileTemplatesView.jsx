@@ -10,6 +10,7 @@ function MobileTemplatesView({
   onStart,
   onDelete,
   onEdit,
+  onExport,
 }) {
   return (
     <div className="h-full overflow-y-auto pb-28">
@@ -29,6 +30,7 @@ function MobileTemplatesView({
           onStart={onStart}
           onDelete={onDelete}
           onEdit={onEdit}
+          onExport={onExport}
           className="grid w-full grid-cols-2 gap-3"
         />
 

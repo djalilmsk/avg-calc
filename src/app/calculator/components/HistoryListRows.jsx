@@ -1,4 +1,4 @@
-import { Copy, Pin, X } from "lucide-react";
+import { Copy, Pin, Share2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CalcInput } from "@/components/ui/calc-ui";
 
@@ -13,6 +13,7 @@ export default function HistoryListRows({
   onStartEditing,
   onOpenHistory,
   onDuplicateHistory,
+  onExportHistory,
   onTogglePinHistory,
   onCreateTemplateFromHistory,
   onDeleteHistory,
@@ -92,6 +93,16 @@ export default function HistoryListRows({
               aria-label="Duplicate history"
             >
               <Copy className="h-3.5 w-3.5" />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => onExportHistory?.(historyItem.id)}
+              className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md border border-border bg-secondary text-muted-foreground hover:bg-accent hover:text-foreground"
+              title="Export history"
+              aria-label="Export history"
+            >
+              <Share2 className="h-3.5 w-3.5" />
             </button>
 
             <button

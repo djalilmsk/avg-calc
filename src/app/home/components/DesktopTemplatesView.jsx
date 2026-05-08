@@ -10,6 +10,7 @@ function DesktopTemplatesView({
   onStart,
   onDelete,
   onEdit,
+  onExport,
 }) {
   return (
     <div className="mt-auto mx-auto flex h-[calc(50dvh+5.2rem)] w-full max-w-7xl flex-col px-3">
@@ -26,6 +27,7 @@ function DesktopTemplatesView({
         onStart={onStart}
         onDelete={onDelete}
         onEdit={onEdit}
+        onExport={onExport}
         className="grid h-30 w-full grid-cols-1 grid-rows-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
       />
 
