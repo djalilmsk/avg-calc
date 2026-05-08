@@ -29,7 +29,7 @@ export default function HistoryListRows({
         return (
           <div
             key={historyItem.id}
-            className={`group flex items-center gap-2 rounded-lg px-2 py-1.5 transition-colors ${
+            className={`group flex items-center gap-2 rounded-lg px-3 py-2.5 md:px-2 md:py-1.5 transition-colors ${
               isActive
                 ? "bg-sidebar-primary text-sidebar-primary-foreground"
                 : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
@@ -38,7 +38,7 @@ export default function HistoryListRows({
             <button
               type="button"
               onClick={() => onTogglePinHistory?.(historyItem.id)}
-              className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-md border cursor-pointer ${
+              className={`flex h-10 w-10 md:h-7 md:w-7 shrink-0 items-center justify-center rounded-md border cursor-pointer ${
                 historyItem.pinned
                   ? "border-border bg-accent text-foreground"
                   : "border-border bg-secondary text-muted-foreground"
@@ -48,7 +48,7 @@ export default function HistoryListRows({
             >
               <Pin
                 className={cn(
-                  "h-3.5 w-3.5",
+                  "h-5 w-5 md:h-3.5 md:w-3.5",
                   historyItem.pinned ? "-rotate-45 fill-white" : "",
                 )}
               />
@@ -71,14 +71,14 @@ export default function HistoryListRows({
                     onCancelEditing?.();
                   }
                 }}
-                className="h-8 flex-1 text-sm"
+                className="h-11 md:h-8 flex-1 text-base md:text-sm"
               />
             ) : (
               <button
                 type="button"
                 onClick={() => onOpenHistory?.(historyItem.id)}
                 onDoubleClick={() => onStartEditing?.(historyItem)}
-                className="flex-1 truncate text-left text-sm cursor-pointer"
+                className="flex-1 truncate text-left text-base md:text-sm cursor-pointer"
                 title={historyItem.name}
               >
                 {historyItem.name}
@@ -88,27 +88,27 @@ export default function HistoryListRows({
             <button
               type="button"
               onClick={() => onDuplicateHistory?.(historyItem.id)}
-              className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md border border-border bg-secondary text-muted-foreground hover:bg-accent hover:text-foreground"
+              className="flex h-10 w-10 md:h-7 md:w-7 cursor-pointer items-center justify-center rounded-md border border-border bg-secondary text-muted-foreground hover:bg-accent hover:text-foreground"
               title="Duplicate history"
               aria-label="Duplicate history"
             >
-              <Copy className="h-3.5 w-3.5" />
+              <Copy className="h-5 w-5 md:h-3.5 md:w-3.5" />
             </button>
 
             <button
               type="button"
               onClick={() => onExportHistory?.(historyItem.id)}
-              className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md border border-border bg-secondary text-muted-foreground hover:bg-accent hover:text-foreground"
+              className="flex h-10 w-10 md:h-7 md:w-7 cursor-pointer items-center justify-center rounded-md border border-border bg-secondary text-muted-foreground hover:bg-accent hover:text-foreground"
               title="Export history"
               aria-label="Export history"
             >
-              <Share2 className="h-3.5 w-3.5" />
+              <Share2 className="h-5 w-5 md:h-3.5 md:w-3.5" />
             </button>
 
             <button
               type="button"
               onClick={() => onCreateTemplateFromHistory?.(historyItem)}
-              className="h-7 cursor-pointer rounded-md border border-border bg-secondary px-2 text-[11px] text-muted-foreground hover:bg-accent hover:text-foreground"
+              className="h-10 md:h-7 cursor-pointer rounded-md border border-border bg-secondary px-3 md:px-2 text-sm md:text-[11px] text-muted-foreground hover:bg-accent hover:text-foreground"
               title="Create template from history"
               aria-label="Create template from history"
             >
@@ -118,11 +118,11 @@ export default function HistoryListRows({
             <button
               type="button"
               onClick={() => onDeleteHistory?.(historyItem.id)}
-              className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md border border-border bg-secondary text-muted-foreground hover:bg-accent hover:text-foreground"
+              className="flex h-10 w-10 md:h-7 md:w-7 cursor-pointer items-center justify-center rounded-md border border-border bg-secondary text-muted-foreground hover:bg-accent hover:text-foreground"
               title="Delete history"
               aria-label="Delete history"
             >
-              <X className="h-3.5 w-3.5" />
+              <X className="h-5 w-5 md:h-3.5 md:w-3.5" />
             </button>
           </div>
         );

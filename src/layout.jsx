@@ -334,7 +334,7 @@ function Layout() {
           history={history} 
           actions={actions} 
           onExport={
-            activeRouteHistoryId
+            isCalculatorRoute && activeRouteHistoryId
               ? () => {
                   setExportHistoryId(activeRouteHistoryId);
                   setExportIncludeGrades(false);
