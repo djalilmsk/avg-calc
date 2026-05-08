@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Copy, X } from "lucide-react";
+import { Copy, X, Check, Share } from "lucide-react";
 import { CalcButton, CalcCheckChip, CalcInput } from "@/components/ui/calc-ui";
 import { buildTemplateShareUrl } from "@/app/calculator/template-share";
 
@@ -44,6 +44,13 @@ function TemplateExportDialog({
     setCopyState("idle");
   }, [shareUrl]);
 
+  useEffect(() => {
+    if (copyState === "copied" || copyState === "failed") {
+      const timeout = setTimeout(() => setCopyState("idle"), 3000);
+      return () => clearTimeout(timeout);
+    }
+  }, [copyState]);
+
   if (!payload) return null;
 
   async function handleCopy() {
@@ -58,6 +65,19 @@ function TemplateExportDialog({
       setCopyState("copied");
     } catch {
       setCopyState("failed");
+    }
+  }
+
+  async function handleNativeShare() {
+    if (!shareUrl || !navigator.share) return;
+    try {
+      await navigator.share({
+        title: "Cooked Calc Template",
+        text: `Check out this template: ${payload.name}`,
+        url: shareUrl,
+      });
+    } catch (err) {
+      // Ignore abort errors from user cancelling the share sheet
     }
   }
 
@@ -136,19 +156,39 @@ function TemplateExportDialog({
             {copyState === "copied" ? "Copied." : null}
             {copyState === "failed" ? "Copy failed." : null}
           </p>
-          <div className="flex justify-end gap-2">
+          <div className="flex justify-end gap-2 flex-wrap">
             <CalcButton type="button" onClick={onClose} variant="soft">
               Close
             </CalcButton>
+            {typeof navigator !== "undefined" && navigator.share ? (
+              <CalcButton
+                type="button"
+                onClick={handleNativeShare}
+                variant="soft"
+                className="inline-flex items-center gap-2"
+              >
+                <Share className="size-4" />
+                Share
+              </CalcButton>
+            ) : null}
             <CalcButton
               type="button"
               onClick={handleCopy}
               variant="primary"
               disabled={!shareUrl}
-              className="inline-flex items-center gap-2"
+              className="inline-flex items-center gap-2 min-w-[120px] justify-center"
             >
-              <Copy className="size-4" />
-              Copy Link
+              {copyState === "copied" ? (
+                <>
+                  <Check className="size-4" />
+                  Copied
+                </>
+              ) : (
+                <>
+                  <Copy className="size-4" />
+                  Copy Link
+                </>
+              )}
             </CalcButton>
           </div>
         </div>
