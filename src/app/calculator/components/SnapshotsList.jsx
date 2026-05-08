@@ -8,7 +8,8 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { BookOpen, Edit } from "lucide-react";
+import { BookOpen, Edit, X } from "lucide-react";
+import { useSidebar } from "@/components/ui/sidebar-context";
 import { SoftIconButton } from "@/components/ui/calc-ui";
 import TemplateDetailsDialog from "@/components/ui/template-details-dialog";
 import { MAX_TEMPLATE_STORAGE } from "@/app/calculator/constants";
@@ -31,6 +32,7 @@ export default function SnapshotsList({
   templateCount = 0,
   onResizeStart,
 }) {
+  const { setOpenMobile, isMobile } = useSidebar();
   const [editingHistoryId, setEditingHistoryId] = useState(null);
   const [editingName, setEditingName] = useState("");
   const [templateDraft, setTemplateDraft] = useState(null);
@@ -164,6 +166,7 @@ export default function SnapshotsList({
               Histories
             </h2>
             <div className="flex items-center gap-1.5">
+
               {onOpenDocs ? (
                 <SoftIconButton
                   onClick={onOpenDocs}
@@ -182,6 +185,16 @@ export default function SnapshotsList({
               >
                 <Edit className="sm:h-4 sm:w-4 h-5.5 w-5.5" />
               </SoftIconButton>
+              {isMobile ? (
+                <SoftIconButton
+                  onClick={() => setOpenMobile(false)}
+                  className="flex h-11 w-11 items-center justify-center rounded-md cursor-pointer"
+                  title="Close sidebar"
+                  aria-label="Close sidebar"
+                >
+                  <X className="h-5.5 w-5.5" />
+                </SoftIconButton>
+              ) : null}
             </div>
           </div>
         </SidebarHeader>
@@ -203,7 +216,10 @@ export default function SnapshotsList({
                   onSubmitEditing={submitEditing}
                   onCancelEditing={cancelEditing}
                   onStartEditing={startEditing}
-                  onOpenHistory={onOpenHistory}
+                  onOpenHistory={(historyId) => {
+                    onOpenHistory?.(historyId);
+                    if (isMobile) setOpenMobile(false);
+                  }}
                   onDuplicateHistory={onDuplicateHistory}
                   onExportHistory={onExportHistory}
                   onTogglePinHistory={onTogglePinHistory}

@@ -4,7 +4,7 @@ import HistoryControls from "@/app/calculator/components/HistoryControls";
 import { Link } from "react-router";
 import { SoftIconButton } from "../ui/calc-ui";
 
-function HomeHeader({ history, actions }) {
+function HomeHeader({ history, actions, onExport }) {
   const docsLinkClassName = `rounded-md border px-2.5 py-1 text-xs font-semibold transition-colors border-border bg-secondary/70 text-muted-foreground hover:bg-accent hover:text-foreground`;
 
   return (
@@ -68,6 +68,7 @@ function HomeHeader({ history, actions }) {
               canRedo={history.canRedo}
               onUndo={actions.undo}
               onRedo={actions.redo}
+              onExport={onExport}
             />
           </div>
         </div>

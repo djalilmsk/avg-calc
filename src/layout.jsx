@@ -330,7 +330,18 @@ function Layout() {
         className={`relative h-screen overflow-hidden bg-background p-2 sm:p-4
           `}
       >
-        <HomeHeader history={history} actions={actions} />
+        <HomeHeader 
+          history={history} 
+          actions={actions} 
+          onExport={
+            isCalculatorRoute && activeRouteHistoryId
+              ? () => {
+                  setExportHistoryId(activeRouteHistoryId);
+                  setExportIncludeGrades(false);
+                }
+              : undefined
+          }
+        />
         <Outlet context={calculator} />
         {shouldShowAddModuleBar ? (
           <AddModuleBar
