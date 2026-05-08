@@ -20,6 +20,7 @@ export default function SnapshotsList({
   onNewChat,
   onOpenHistory,
   onDuplicateHistory,
+  onExportHistory,
   onRenameHistory,
   onDeleteHistory,
   onTogglePinHistory,
@@ -204,6 +205,7 @@ export default function SnapshotsList({
                   onStartEditing={startEditing}
                   onOpenHistory={onOpenHistory}
                   onDuplicateHistory={onDuplicateHistory}
+                  onExportHistory={onExportHistory}
                   onTogglePinHistory={onTogglePinHistory}
                   onCreateTemplateFromHistory={openTemplateDialog}
                   onDeleteHistory={onDeleteHistory}

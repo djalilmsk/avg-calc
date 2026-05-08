@@ -8,6 +8,7 @@ import {
   isTemplateHistoryEmpty
 } from "../historyTemplateModel";
 import { normalizeTimelinePayload } from "../timelineModel";
+import { normalizeImportedTemplatePayload } from "../../../template-share";
 
 export function useHistoryActions({
   storageApi,
@@ -172,6 +173,40 @@ export function useHistoryActions({
         name: moduleName,
         pinned: false,
         rows: [createRowFromPayload(modulePayload, { clearScores: false })],
+        createdAt: now,
+        updatedAt: now,
+        sourceTemplateId: null
+      };
+
+      setHistories((currentHistories) => [newHistory, ...currentHistories]);
+      setHistoryCount((count) => Math.max(count, usedCount + 1));
+      storageApi.saveHistoryTimeline(historyId, { past: [], future: [] });
+      return newHistory;
+    },
+    [historiesRef, historyCountRef, setHistories, setHistoryCount, storageApi]
+  );
+
+  const createHistoryFromImportedTemplate = useCallback(
+    (payload) => {
+      const templatePayload = normalizeImportedTemplatePayload(payload);
+      if (!templatePayload) return null;
+
+      const baseCount = historyCountRef.current;
+      const { historyId, usedCount } = getNextUniqueHistory(
+        templatePayload.name,
+        baseCount,
+        historiesRef.current
+      );
+      const now = Date.now();
+      const newHistory = {
+        id: historyId,
+        name: templatePayload.name,
+        pinned: false,
+        rows: templatePayload.rows.map((row) =>
+          createRowFromPayload(row, {
+            clearScores: !templatePayload.includeGrades
+          })
+        ),
         createdAt: now,
         updatedAt: now,
         sourceTemplateId: null
@@ -405,6 +440,7 @@ export function useHistoryActions({
       selectHistory,
       createHistoryFromTemplate,
       createHistoryFromModule,
+      createHistoryFromImportedTemplate,
       duplicateHistory,
       renameHistory,
       deleteHistory,
@@ -413,6 +449,7 @@ export function useHistoryActions({
     }),
     [
       createHistoryFromModule,
+      createHistoryFromImportedTemplate,
       createHistoryFromTemplate,
       deleteHistory,
       discardSelectedTemplateHistoryIfEmpty,

@@ -9,6 +9,7 @@ function TemplatesOverflowDialog({
   onStart,
   onDelete,
   onEdit,
+  onExport,
 }) {
   useEffect(() => {
     if (!open) return undefined;
@@ -54,6 +55,7 @@ function TemplatesOverflowDialog({
             onStart={onStart}
             onDelete={onDelete}
             onEdit={onEdit}
+            onExport={onExport}
             className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
           />
         </div>
