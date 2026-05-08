@@ -170,9 +170,8 @@ export default function ModulesTable({
                       caRefs.current[index] = el;
                     }}
                     onKeyDown={(event) => handleTabNavigation(event, index, "ca")}
-                    className={`min-w-0 ${
-                      row.includeCa === false ? "opacity-40" : ""
-                    }`}
+                    className={`min-w-0 ${row.includeCa === false ? "opacity-40" : ""
+                      }`}
                   />
                 </td>
 
@@ -193,19 +192,17 @@ export default function ModulesTable({
                     onKeyDown={(event) =>
                       handleTabNavigation(event, index, "exam")
                     }
-                    className={`min-w-0 ${
-                      row.includeExam === false ? "opacity-40" : ""
-                    }`}
+                    className={`min-w-0 ${row.includeExam === false ? "opacity-40" : ""
+                      }`}
                   />
                 </td>
 
                 <td className="px-1">
                   <span
-                    className={`font-semibold pl-3 ${
-                      row.moduleFinal !== "" && row.moduleFinal < 10
+                    className={`font-semibold pl-3 ${row.moduleFinal !== "" && row.moduleFinal < 10
                         ? "text-destructive"
                         : "text-foreground"
-                    }`}
+                      }`}
                   >
                     <EmptyValue value={row.moduleFinal} />
                   </span>

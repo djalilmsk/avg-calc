@@ -226,17 +226,7 @@ const AddModuleBar = forwardRef(function AddModuleBar(
                 />
               </div>
               <div className="grid grid-cols-2 gap-2">
-                <CalcCheckChip>
-                  <input
-                    type="checkbox"
-                    checked={includeExam}
-                    onChange={(event) =>
-                      handleIncludeExamChange(event.target.checked)
-                    }
-                    className="mr-1 size-5 rounded-full accent-muted-foreground"
-                  />
-                  is Exam
-                </CalcCheckChip>
+
                 <CalcCheckChip>
                   <input
                     type="checkbox"
@@ -247,6 +237,17 @@ const AddModuleBar = forwardRef(function AddModuleBar(
                     className="mr-1 size-5 rounded-full accent-muted-foreground"
                   />
                   is TD
+                </CalcCheckChip>
+                <CalcCheckChip>
+                  <input
+                    type="checkbox"
+                    checked={includeExam}
+                    onChange={(event) =>
+                      handleIncludeExamChange(event.target.checked)
+                    }
+                    className="mr-1 size-5 rounded-full accent-muted-foreground"
+                  />
+                  is Exam
                 </CalcCheckChip>
               </div>
               <div className="grid grid-cols-2 gap-2">
@@ -318,17 +319,6 @@ const AddModuleBar = forwardRef(function AddModuleBar(
               <CalcCheckChip>
                 <input
                   type="checkbox"
-                  checked={includeExam}
-                  onChange={(event) =>
-                    handleIncludeExamChange(event.target.checked)
-                  }
-                  className="mr-1 size-5 rounded-full accent-muted-foreground"
-                />
-                Ex
-              </CalcCheckChip>
-              <CalcCheckChip>
-                <input
-                  type="checkbox"
                   checked={includeCa}
                   onChange={(event) =>
                     handleIncludeCaChange(event.target.checked)
@@ -337,6 +327,18 @@ const AddModuleBar = forwardRef(function AddModuleBar(
                 />
                 TD
               </CalcCheckChip>
+              <CalcCheckChip>
+                <input
+                  type="checkbox"
+                  checked={includeExam}
+                  onChange={(event) =>
+                    handleIncludeExamChange(event.target.checked)
+                  }
+                  className="mr-1 size-5 rounded-full accent-muted-foreground"
+                />
+                Ex
+              </CalcCheckChip>
+
               <CalcButton
                 onClick={handleAdd}
                 variant="primary"

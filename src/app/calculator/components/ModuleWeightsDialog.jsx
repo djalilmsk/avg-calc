@@ -10,39 +10,28 @@ function ModuleWeightsDialog({ draft, onChange, onClose, onSave }) {
         <p className="mt-1 text-xs text-muted-foreground">Update Exam and TD weights.</p>
 
         <div className="mt-3 space-y-2">
-          <label className="flex items-center gap-2 rounded-[var(--radius-lg)] bg-muted px-3 py-2 text-sm text-muted-foreground">
-            <input
-              type="checkbox"
-              checked={draft.includeExam}
-              onChange={(event) => onChange("includeExam", event.target.checked)}
-              className="size-4 accent-muted-foreground"
-            />
-            Include Exam
-          </label>
-
-          <label className="flex items-center gap-2 rounded-[var(--radius-lg)] bg-muted px-3 py-2 text-sm text-muted-foreground">
-            <input
-              type="checkbox"
-              checked={draft.includeCa}
-              onChange={(event) => onChange("includeCa", event.target.checked)}
-              className="size-4 accent-muted-foreground"
-            />
-            Include TD
-          </label>
+          <div className="grid grid-cols-2 gap-2">
+            <label className="flex items-center gap-2 rounded-[var(--radius-lg)] bg-muted px-3 py-2 text-sm text-muted-foreground">
+              <input
+                type="checkbox"
+                checked={draft.includeCa}
+                onChange={(event) => onChange("includeCa", event.target.checked)}
+                className="size-4 accent-muted-foreground"
+              />
+              Include TD
+            </label>
+            <label className="flex items-center gap-2 rounded-[var(--radius-lg)] bg-muted px-3 py-2 text-sm text-muted-foreground">
+              <input
+                type="checkbox"
+                checked={draft.includeExam}
+                onChange={(event) => onChange("includeExam", event.target.checked)}
+                className="size-4 accent-muted-foreground"
+              />
+              Include Exam
+            </label>
+          </div>
 
           <div className="grid grid-cols-2 gap-2">
-            <CalcInput
-              type="number"
-              step="0.01"
-              min="0"
-              max="1"
-              inputMode="decimal"
-              aria-label="Exam weight"
-              value={draft.examWeight}
-              onChange={(event) => onChange("examWeight", event.target.value)}
-              disabled={!draft.includeExam}
-              placeholder="Exam weight"
-            />
             <CalcInput
               type="number"
               step="0.01"
@@ -54,6 +43,18 @@ function ModuleWeightsDialog({ draft, onChange, onClose, onSave }) {
               onChange={(event) => onChange("caWeight", event.target.value)}
               disabled={!draft.includeCa}
               placeholder="TD weight"
+            />
+            <CalcInput
+              type="number"
+              step="0.01"
+              min="0"
+              max="1"
+              inputMode="decimal"
+              aria-label="Exam weight"
+              value={draft.examWeight}
+              onChange={(event) => onChange("examWeight", event.target.value)}
+              disabled={!draft.includeExam}
+              placeholder="Exam weight"
             />
           </div>
         </div>
