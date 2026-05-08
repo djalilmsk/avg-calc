@@ -1,5 +1,12 @@
-import { Copy, Pin, Share2, X } from "lucide-react";
+import { Copy, Pin, Share2, X, MoreHorizontal, LayoutTemplate } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import { CalcInput } from "@/components/ui/calc-ui";
 
 export default function HistoryListRows({
@@ -29,7 +36,9 @@ export default function HistoryListRows({
         return (
           <div
             key={historyItem.id}
-            className={`group flex items-center gap-2 rounded-lg px-3 py-2.5 md:px-2 md:py-1.5 transition-colors ${
+            onClick={() => !isEditing && onOpenHistory?.(historyItem.id)}
+            onDoubleClick={() => !isEditing && onStartEditing?.(historyItem)}
+            className={`group flex items-center gap-2 rounded-lg px-2 py-2 md:px-1.5 md:py-1.5 cursor-pointer transition-colors ${
               isActive
                 ? "bg-sidebar-primary text-sidebar-primary-foreground"
                 : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
@@ -37,8 +46,9 @@ export default function HistoryListRows({
           >
             <button
               type="button"
-              onClick={() => onTogglePinHistory?.(historyItem.id)}
-              className={`flex h-10 w-10 md:h-7 md:w-7 shrink-0 items-center justify-center rounded-md border cursor-pointer ${
+              onClick={(e) => { e.stopPropagation(); onTogglePinHistory?.(historyItem.id); }}
+              onDoubleClick={(e) => e.stopPropagation()}
+              className={`flex h-11 w-11 md:h-9 md:w-9 shrink-0 items-center justify-center rounded-md border cursor-pointer ${
                 historyItem.pinned
                   ? "border-border bg-accent text-foreground"
                   : "border-border bg-secondary text-muted-foreground"
@@ -48,7 +58,7 @@ export default function HistoryListRows({
             >
               <Pin
                 className={cn(
-                  "h-5 w-5 md:h-3.5 md:w-3.5",
+                  "h-6 w-6 md:h-4.5 md:w-4.5",
                   historyItem.pinned ? "-rotate-45 fill-white" : "",
                 )}
               />
@@ -74,56 +84,47 @@ export default function HistoryListRows({
                 className="h-11 md:h-8 flex-1 text-base md:text-sm"
               />
             ) : (
-              <button
-                type="button"
-                onClick={() => onOpenHistory?.(historyItem.id)}
-                onDoubleClick={() => onStartEditing?.(historyItem)}
-                className="flex-1 truncate text-left text-base md:text-sm cursor-pointer"
+              <span
+                className="flex-1 truncate text-left text-base md:text-sm"
                 title={historyItem.name}
               >
                 {historyItem.name}
-              </button>
+              </span>
             )}
 
-            <button
-              type="button"
-              onClick={() => onDuplicateHistory?.(historyItem.id)}
-              className="flex h-10 w-10 md:h-7 md:w-7 cursor-pointer items-center justify-center rounded-md border border-border bg-secondary text-muted-foreground hover:bg-accent hover:text-foreground"
-              title="Duplicate history"
-              aria-label="Duplicate history"
-            >
-              <Copy className="h-5 w-5 md:h-3.5 md:w-3.5" />
-            </button>
-
-            <button
-              type="button"
-              onClick={() => onExportHistory?.(historyItem.id)}
-              className="flex h-10 w-10 md:h-7 md:w-7 cursor-pointer items-center justify-center rounded-md border border-border bg-secondary text-muted-foreground hover:bg-accent hover:text-foreground"
-              title="Export history"
-              aria-label="Export history"
-            >
-              <Share2 className="h-5 w-5 md:h-3.5 md:w-3.5" />
-            </button>
-
-            <button
-              type="button"
-              onClick={() => onCreateTemplateFromHistory?.(historyItem)}
-              className="h-10 md:h-7 cursor-pointer rounded-md border border-border bg-secondary px-3 md:px-2 text-sm md:text-[11px] text-muted-foreground hover:bg-accent hover:text-foreground"
-              title="Create template from history"
-              aria-label="Create template from history"
-            >
-              Tpl
-            </button>
-
-            <button
-              type="button"
-              onClick={() => onDeleteHistory?.(historyItem.id)}
-              className="flex h-10 w-10 md:h-7 md:w-7 cursor-pointer items-center justify-center rounded-md border border-border bg-secondary text-muted-foreground hover:bg-accent hover:text-foreground"
-              title="Delete history"
-              aria-label="Delete history"
-            >
-              <X className="h-5 w-5 md:h-3.5 md:w-3.5" />
-            </button>
+            <div onClick={(e) => e.stopPropagation()} onDoubleClick={(e) => e.stopPropagation()}>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    type="button"
+                    className="flex h-11 w-11 md:h-9 md:w-9 cursor-pointer items-center justify-center rounded-md border border-border bg-secondary text-muted-foreground hover:bg-accent hover:text-foreground"
+                    title="More options"
+                    aria-label="More options"
+                  >
+                    <MoreHorizontal className="h-6 w-6 md:h-4.5 md:w-4.5" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onDuplicateHistory?.(historyItem.id); }} className="cursor-pointer">
+                    <Copy className="mr-2 h-4 w-4" />
+                    <span>Duplicate</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onExportHistory?.(historyItem.id); }} className="cursor-pointer">
+                    <Share2 className="mr-2 h-4 w-4" />
+                    <span>Export</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onCreateTemplateFromHistory?.(historyItem); }} className="cursor-pointer">
+                    <LayoutTemplate className="mr-2 h-4 w-4" />
+                    <span>Create template</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onDeleteHistory?.(historyItem.id); }} className="cursor-pointer text-destructive focus:bg-destructive/10 focus:text-destructive">
+                    <X className="mr-2 h-4 w-4" />
+                    <span>Delete</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
         );
       })}
