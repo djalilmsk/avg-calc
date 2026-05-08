@@ -72,8 +72,6 @@ function TemplateExportDialog({
     if (!shareUrl || !navigator.share) return;
     try {
       await navigator.share({
-        title: "Cooked Calc Template",
-        text: `Check out this template: ${payload.name}`,
         url: shareUrl,
       });
     } catch (err) {
@@ -156,8 +154,8 @@ function TemplateExportDialog({
             {copyState === "copied" ? "Copied." : null}
             {copyState === "failed" ? "Copy failed." : null}
           </p>
-          <div className="flex justify-end gap-2 flex-wrap">
-            <CalcButton type="button" onClick={onClose} variant="soft">
+          <div className="flex w-full gap-2 sm:justify-end">
+            <CalcButton type="button" onClick={onClose} variant="soft" className="hidden sm:inline-flex">
               Close
             </CalcButton>
             {typeof navigator !== "undefined" && navigator.share ? (
@@ -165,7 +163,7 @@ function TemplateExportDialog({
                 type="button"
                 onClick={handleNativeShare}
                 variant="soft"
-                className="inline-flex items-center gap-2"
+                className="inline-flex flex-1 items-center justify-center gap-2 sm:flex-none"
               >
                 <Share className="size-4" />
                 Share
@@ -176,7 +174,7 @@ function TemplateExportDialog({
               onClick={handleCopy}
               variant="primary"
               disabled={!shareUrl}
-              className="inline-flex items-center gap-2 min-w-[120px] justify-center"
+              className="inline-flex flex-1 items-center justify-center gap-2 sm:min-w-[120px] sm:flex-none"
             >
               {copyState === "copied" ? (
                 <>
