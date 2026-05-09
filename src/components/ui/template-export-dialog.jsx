@@ -74,7 +74,7 @@ function TemplateExportDialog({
       await navigator.share({
         url: shareUrl,
       });
-    } catch (err) {
+    } catch {
       // Ignore abort errors from user cancelling the share sheet
     }
   }
